@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { MdDelete } from "react-icons/md";
+import trackIt from "../assets/TrackIt.png";
+import bob from "../assets/bob.png";
+import logoMais from "../assets/+.svg";
 
 const HabitsPage = () => {
   const [showAddHabit, setShowAddHabit] = useState(false);
@@ -14,17 +16,24 @@ const HabitsPage = () => {
   };
 
   const handleSave = () => {
-    // Lógica para salvar o novo hábito
+    // Logic to save the new habit
     setShowAddHabit(false);
   };
 
   return (
     <Wrapper>
-      <Nav>Nav</Nav>
+      <Nav>
+        <TrackDiv>
+          <TrackLogo src={trackIt} alt="TrackIt" />
+        </TrackDiv>
+        <BobLogo src={bob} alt="Bob" />
+      </Nav>
       <Container>
         <HabilitsCreator>
           <Title>Meus Hábitos</Title>
-          <AddButton onClick={handleAddHabit}>+</AddButton>
+          <AddButton onClick={handleAddHabit}>
+            <MaisLogo src={logoMais} alt="Mais" />
+          </AddButton>
         </HabilitsCreator>
         {showAddHabit && (
           <AddHabitContainer>
@@ -49,7 +58,7 @@ const HabitsPage = () => {
         <HabitsContainer>
           <Habit>
             <HabitName>Sair</HabitName>
-            <DeleteIcon />
+            {/* <DeleteIcon /> */}
             <DaysOfWeek>
               <DayButton>D</DayButton>
               <DayButton>S</DayButton>
@@ -60,7 +69,6 @@ const HabitsPage = () => {
               <DayButton>S</DayButton>
             </DaysOfWeek>
           </Habit>
-          {/* Adicione aqui outros componentes de hábitos */}
         </HabitsContainer>
       </Container>
       <Footer>Footer</Footer>
@@ -75,6 +83,31 @@ const Wrapper = styled.div`
   background: #e5e5e5;
 `;
 
+const TrackLogo = styled.img`
+  width: 97px;
+  height: 49px;
+`;
+const TrackDiv = styled.div`
+  display: flex;
+`;
+const BobLogo = styled.img`
+  width: 51px;
+  height: 51px;
+`;
+const MaisLogo = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+const Nav = styled.nav`
+  height: 70px;
+  background: rgb(18, 107, 165);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -94,7 +127,7 @@ const Habit = styled.div`
   align-items: flex-start;
   justify-content: center;
   position: relative;
-  overflow: hidden; /* Adicionado para evitar que os botões saiam do componente */
+  overflow: hidden; /* Added to prevent buttons from overflowing the component */
 `;
 
 const HabitName = styled.h1`
@@ -102,23 +135,14 @@ const HabitName = styled.h1`
   margin-left: 15px;
 `;
 
-const DeleteIcon = styled(MdDelete)`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 20px;
-  color: red;
-  cursor: pointer;
-`;
-
-const Nav = styled.nav`
-  height: 60px;
-  background-color: #3312c2;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`;
+// const DeleteIcon = styled(MdDelete)`
+//   position: absolute;
+//   top: 8px;
+//   right: 8px;
+//   font-size: 20px;
+//   color: red;
+//   cursor: pointer;
+// `;
 
 const HabilitsCreator = styled.div`
   display: flex;
@@ -128,23 +152,25 @@ const HabilitsCreator = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 20px;
-  font-weight: bold;
-  color: #000;
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22.976px;
+  line-height: 29px;
+  color: #126ba5;
 `;
 
-const AddButton = styled.button`
-  width: 30px;
-  height: 30px;
-  background-color: #52b6ff;
-  border: none;
-  border-radius: 50%;
+const AddButton = styled.div`
+  width: 40px;
+  height: 35px;
+  border-radius: 4.63636px; /* Set the border radius */
   color: #fff;
   font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  background: #52b6ff;
 `;
 
 const Footer = styled.footer`
@@ -172,14 +198,28 @@ const AddHabitScreen = styled.div`
 `;
 
 const Input = styled.input`
-  width: 100%;
-  height: 30px;
-  margin-bottom: 16px;
+  width: 303px;
+  height: 45px;
+  background: #ffffff;
+  border: 1px solid #d5d5d5;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  padding-left: 11px;
+
+  &::placeholder {
+    margin-left: 11px;
+    color: #dbdbdb;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #52b6ff;
+    box-shadow: 0 0 0 2px rgba(82, 182, 255, 0.5);
+  }
 `;
 
 const DaysOfWeek = styled.div`
   display: flex;
-  justify-content: space-between;
   margin-bottom: 16px;
 `;
 
@@ -195,8 +235,8 @@ const DayButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-right: 8px;
-  margin-left: 8px;
+  margin-right: 4px;
+  margin-top: 8px;
 `;
 
 const ButtonContainer = styled.div`
@@ -205,13 +245,15 @@ const ButtonContainer = styled.div`
 `;
 
 const CancelButton = styled.button`
-  background-color: #c70a0a;
-  color: #fff;
+  color: #52b6ff;
+  background: none;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
   margin-right: 8px;
   cursor: pointer;
+  width: 84px;
+  height: 35px;
 `;
 
 const SaveButton = styled.button`
@@ -221,6 +263,8 @@ const SaveButton = styled.button`
   border-radius: 4px;
   padding: 8px 16px;
   cursor: pointer;
+  width: 84px;
+  height: 35px;
 `;
 
 export default HabitsPage;

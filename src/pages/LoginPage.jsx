@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import logo from "../assets/logo.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ const LoginPage = () => {
 
   return (
     <Wrapper>
+      <Logo src={logo}></Logo>
       <form onSubmit={handleSubmit}>
         <div>
           <Input
@@ -42,9 +44,9 @@ const LoginPage = () => {
           <Button type="submit">Entrar</Button>
         </Link>
       </form>
-      <P>
-        <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
-      </P>
+      <Link to="/cadastro">
+        <P>Não tem uma conta? Cadastre-se!</P>
+      </Link>
     </Wrapper>
   );
 };
@@ -62,8 +64,13 @@ const Wrapper = styled.div`
   text-align: center;
 `;
 
+const Logo = styled.img`
+  margin-bottom: 36px;
+  width: 180px;
+  height: 178.38px;
+`;
+
 const P = styled.p`
-  color: #52b6ff;
   font-family: "Lexend Deca";
   font-style: normal;
   font-weight: 400;
@@ -71,6 +78,10 @@ const P = styled.p`
   line-height: 17px;
   text-align: center;
   text-decoration-line: underline;
+
+  color: #52b6ff;
+
+  margin-bottom: 200px;
 `;
 
 const Input = styled.input`
@@ -79,6 +90,19 @@ const Input = styled.input`
   background: #ffffff;
   border: 1px solid #d5d5d5;
   border-radius: 5px;
+  margin-bottom: 6px;
+  padding-left: 11px;
+
+  &::placeholder {
+    margin-left: 11px;
+    color: #dbdbdb;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #52b6ff;
+    box-shadow: 0 0 0 2px rgba(82, 182, 255, 0.5);
+  }
 `;
 
 const Button = styled.button`
@@ -89,4 +113,10 @@ const Button = styled.button`
   border-radius: 4.63636px;
   border: none;
   cursor: pointer;
+  margin-bottom: 25px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20.976px;
+  line-height: 26px;
+  text-align: center;
 `;
