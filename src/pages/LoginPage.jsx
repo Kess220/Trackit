@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import axios from "axios";
@@ -9,6 +9,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
   const { updateToken } = useContext(AuthContext);
 
   const handleEmailChange = (e) => {
@@ -36,13 +39,14 @@ const LoginPage = () => {
 
       const { token } = response.data;
       updateToken(token);
-      console.log(updateToken);
 
       console.log(token);
       // Redirecionar para a rota desejada após o login bem-sucedido
       // Você pode substituir "/habitos" pela rota desejada
-      // window.location.href = "/habitos";
+      navigate("/habitos");
     } catch (error) {
+      console.log(error);
+
       setError("Ocorreu um erro ao fazer login. Verifique suas credenciais.");
     }
   };
@@ -70,7 +74,7 @@ const LoginPage = () => {
         </div>
         <Button type="submit">Entrar</Button>
       </form>
-      <Link to="/signup">Não tem uma conta? Cadastre-se!</Link>
+      <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
     </Wrapper>
   );
 };

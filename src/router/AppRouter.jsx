@@ -8,8 +8,8 @@ import { AuthProvider } from "../components/AuthContext";
 
 const AppRouter = () => {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/cadastro" element={<SignupPage />} />
@@ -17,8 +17,8 @@ const AppRouter = () => {
           <Route path="/hoje" element={<TodayPage />} />
           <Route path="/historico" element={<Historic />} />
         </Routes>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 };
 

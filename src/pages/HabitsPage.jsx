@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import styled from "styled-components";
 import trackIt from "../assets/TrackIt.png";
@@ -17,6 +17,20 @@ const HabitsPage = () => {
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
   const [habitName, setHabitName] = useState("");
+  const [habits, setHabits] = useState([]);
+  const daysOfWeekButtons = [
+    { day: "D", value: "1" },
+    { day: "S", value: "2" },
+    { day: "T", value: "3" },
+    { day: "Q", value: "4" },
+    { day: "Q", value: "5" },
+    { day: "S", value: "6" },
+    { day: "S", value: "7" },
+  ];
+
+  useEffect(() => {
+    handleGetHabits();
+  }, []);
 
   // Obtenha o token do contexto
 
@@ -39,6 +53,7 @@ const HabitsPage = () => {
 
   const handleCancel = () => {
     setShowAddHabit(false);
+    setSelectedDays([]);
   };
 
   const handleSave = () => {
@@ -60,12 +75,51 @@ const HabitsPage = () => {
       .then((response) => {
         console.log("Habit saved successfully:", response.data);
         setShowAddHabit(false);
+        setSelectedDays([]);
+        setHabitName(""); // Limpar o valor do input
+        handleGetHabits();
       })
       .catch((error) => {
         console.log("Error saving habit:", error);
-        console.log(token);
-        console.log(habitName);
-        console.log(habitData);
+      });
+  };
+
+  const handleGetHabits = () => {
+    axios
+      .get(
+        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setHabits(response.data);
+        console.log("Habits retrieved successfully:", response.data);
+      })
+      .catch((error) => {
+        console.log("Error retrieving habits:", error);
+      });
+  };
+
+  const handleDeleteHabit = (habitId) => {
+    axios
+      .delete(
+        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Habit deleted successfully:", response.data);
+        handleGetHabits();
+      })
+      .catch((error) => {
+        console.log("Error deleting habit:", error);
+        console.log(habitId);
       });
   };
 
@@ -89,60 +143,21 @@ const HabitsPage = () => {
             <Input
               type="text"
               placeholder="Nome do hábito"
-              value={habitName} // Bind the value to the habitName state
-              onChange={handleNameChange} // Handle input value changes
+              value={habitName}
+              onChange={handleNameChange}
             />
             <DaysOfWeek>
-              <DayButton
-                selected={selectedDays.includes("1")}
-                onClick={() => handleDayClick("1")}
-                data-day="1"
-              >
-                D
-              </DayButton>
-              <DayButton
-                selected={selectedDays.includes("2")}
-                onClick={() => handleDayClick("2")}
-                data-day="2"
-              >
-                S
-              </DayButton>
-              <DayButton
-                selected={selectedDays.includes("3")}
-                onClick={() => handleDayClick("3")}
-                data-day="3"
-              >
-                T
-              </DayButton>
-              <DayButton
-                selected={selectedDays.includes("4")}
-                onClick={() => handleDayClick("4")}
-                data-day="4"
-              >
-                Q
-              </DayButton>
-              <DayButton
-                selected={selectedDays.includes("5")}
-                onClick={() => handleDayClick("5")}
-                data-day="5"
-              >
-                Q
-              </DayButton>
-              <DayButton
-                selected={selectedDays.includes("6")}
-                onClick={() => handleDayClick("6")}
-                data-day="6"
-              >
-                S
-              </DayButton>
-              <DayButton
-                selected={selectedDays.includes("7")}
-                onClick={() => handleDayClick("7")}
-                data-day="7"
-              >
-                S
-              </DayButton>
+              {daysOfWeekButtons.map((day) => (
+                <DayButton
+                  key={day.value}
+                  selected={selectedDays.includes(day.value)}
+                  onClick={() => handleDayClick(day.value)}
+                >
+                  {day.day}
+                </DayButton>
+              ))}
             </DaysOfWeek>
+
             <ButtonContainer>
               <CancelButton onClick={handleCancel}>Cancelar</CancelButton>
               <SaveButton onClick={handleSave}>Salvar</SaveButton>
@@ -150,47 +165,26 @@ const HabitsPage = () => {
           </AddHabitScreen>
         )}
         <HabitsContainer>
-          <Habit>
-            <HabitName>Ler 1 capítulo de livro</HabitName>
-            <DeletIcon src={lixeira} />
-            <DaysOfWeek>
-              <DayButton>D</DayButton>
-              <DayButton>S</DayButton>
-              <DayButton>T</DayButton>
-              <DayButton>Q</DayButton>
-              <DayButton>Q</DayButton>
-              <DayButton>S</DayButton>
-              <DayButton>S</DayButton>
-            </DaysOfWeek>
-          </Habit>
+          {habits.map((habit) => (
+            <Habit key={habit.id}>
+              <HabitName>{habit.name}</HabitName>
+              <DeletIcon
+                src={lixeira}
+                onClick={() => handleDeleteHabit(habit.id)}
+              />
 
-          <Habit>
-            <HabitName>Ler 1 capítulo de livro</HabitName>
-            <DeletIcon src={lixeira} />
-            <DaysOfWeek>
-              <DayButton>D</DayButton>
-              <DayButton>S</DayButton>
-              <DayButton>T</DayButton>
-              <DayButton>Q</DayButton>
-              <DayButton>Q</DayButton>
-              <DayButton>S</DayButton>
-              <DayButton>S</DayButton>
-            </DaysOfWeek>
-          </Habit>
-
-          <Habit>
-            <HabitName>Ler 1 capítulo de livro</HabitName>
-            <DeletIcon src={lixeira} />
-            <DaysOfWeek>
-              <DayButton>D</DayButton>
-              <DayButton>S</DayButton>
-              <DayButton>T</DayButton>
-              <DayButton>Q</DayButton>
-              <DayButton>Q</DayButton>
-              <DayButton>S</DayButton>
-              <DayButton>S</DayButton>
-            </DaysOfWeek>
-          </Habit>
+              <DaysOfWeek>
+                {daysOfWeekButtons.map((day) => (
+                  <DayButton
+                    key={day.value}
+                    selected={habit.days.includes(parseInt(day.value))}
+                  >
+                    {day.day}
+                  </DayButton>
+                ))}
+              </DaysOfWeek>
+            </Habit>
+          ))}
         </HabitsContainer>
       </Container>
       <Footer>
@@ -417,7 +411,7 @@ const DayButton = styled.button`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    opacity: 0; /* Hide the number */
+    opacity: ${(props) => (props.selected ? 1 : 0)};
   }
 `;
 
