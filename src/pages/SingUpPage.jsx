@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
+import axios from "axios";
 
-const SingUpPage = () => {
+const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
+  const [error, setError] = useState("");
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -25,15 +27,41 @@ const SingUpPage = () => {
     setImage(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Lógica de autenticação ou chamada a API aqui
+
+    try {
+      const userData = {
+        email: email,
+        name: name,
+        password: password,
+        image: image,
+      };
+
+      const response = await axios.post(
+        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",
+        userData,
+        {
+          headers: {
+            Authorization: "RUsE86dEj8Lc6yVHbB8tzI3l",
+          },
+        }
+      );
+
+      console.log(response.data);
+      // Redirecionar para a rota inicial após o cadastro
+      window.location.href = "/";
+    } catch (error) {
+      setError("Ocorreu um erro ao cadastrar. Por favor, tente novamente.");
+      alert("Ocorreu um erro ao cadastrar. Por favor, tente novamente.");
+    }
   };
 
   return (
     <Wrapper>
-      <Logo src={logo}></Logo>
+      <Logo src={logo} alt="Logo" />
       <form onSubmit={handleSubmit}>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div>
           <Input
             type="email"
@@ -61,21 +89,19 @@ const SingUpPage = () => {
         <div>
           <Input
             type="text"
-            placeholder="foto"
+            placeholder="URL da foto"
             value={image}
             onChange={handleImageChange}
           />
         </div>
         <Button type="submit">Cadastrar</Button>
       </form>
-      <Link to="/">
-        <P>Já tem uma conta? Faça login!</P>
-      </Link>
+      <Link to="/">Já tem uma conta? Faça login!</Link>
     </Wrapper>
   );
 };
 
-export default SingUpPage;
+export default SignUpPage;
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -87,25 +113,12 @@ const Wrapper = styled.div`
   height: 100vh;
   text-align: center;
 `;
+
 const Logo = styled.img`
   margin-bottom: 36px;
   width: 180px;
   height: 178.38px;
   margin-top: 68px;
-`;
-
-const P = styled.p`
-  font-family: "Lexend Deca";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13.976px;
-  line-height: 17px;
-  text-align: center;
-  text-decoration-line: underline;
-
-  color: #52b6ff;
-
-  margin-bottom: 200px;
 `;
 
 const Input = styled.input`
@@ -143,4 +156,9 @@ const Button = styled.button`
   font-size: 20.976px;
   line-height: 26px;
   text-align: center;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  margin-bottom: 10px;
 `;

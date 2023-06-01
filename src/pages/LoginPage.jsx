@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
+import axios from "axios";
+import { AuthContext } from "../components/AuthContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { updateToken } = useContext(AuthContext);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -15,15 +19,39 @@ const LoginPage = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Lógica de autenticação ou chamada a API aqui
+
+    try {
+      const userData = {
+        email: email,
+        password: password,
+      };
+
+      const response = await axios.post(
+        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
+        userData
+      );
+      console.log(response.data);
+
+      const { token } = response.data;
+      updateToken(token);
+      console.log(updateToken);
+
+      console.log(token);
+      // Redirecionar para a rota desejada após o login bem-sucedido
+      // Você pode substituir "/habitos" pela rota desejada
+      // window.location.href = "/habitos";
+    } catch (error) {
+      setError("Ocorreu um erro ao fazer login. Verifique suas credenciais.");
+    }
   };
 
   return (
     <Wrapper>
-      <Logo src={logo}></Logo>
-      <form onSubmit={handleSubmit}>
+      <Logo src={logo} alt="Logo" />
+      <form onSubmit={handleLogin}>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div>
           <Input
             type="email"
@@ -40,13 +68,9 @@ const LoginPage = () => {
             onChange={handlePasswordChange}
           />
         </div>
-        <Link to="/habitos">
-          <Button type="submit">Entrar</Button>
-        </Link>
+        <Button type="submit">Entrar</Button>
       </form>
-      <Link to="/cadastro">
-        <P>Não tem uma conta? Cadastre-se!</P>
-      </Link>
+      <Link to="/signup">Não tem uma conta? Cadastre-se!</Link>
     </Wrapper>
   );
 };
@@ -68,20 +92,7 @@ const Logo = styled.img`
   margin-bottom: 36px;
   width: 180px;
   height: 178.38px;
-`;
-
-const P = styled.p`
-  font-family: "Lexend Deca";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13.976px;
-  line-height: 17px;
-  text-align: center;
-  text-decoration-line: underline;
-
-  color: #52b6ff;
-
-  margin-bottom: 200px;
+  margin-top: 68px;
 `;
 
 const Input = styled.input`
@@ -119,4 +130,9 @@ const Button = styled.button`
   font-size: 20.976px;
   line-height: 26px;
   text-align: center;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  margin-bottom: 10px;
 `;

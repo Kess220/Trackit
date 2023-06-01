@@ -1,13 +1,20 @@
 import styled from "styled-components";
-import { FiCheckCircle } from "react-icons/fi";
+import trackIt from "../assets/TrackIt.png";
+import bob from "../assets/bob.png";
+import { AiFillCheckSquare } from "react-icons/ai";
 
 const TodayPage = () => {
   return (
     <Wrapper>
-      <Nav>Nav</Nav>
+      <Nav>
+        <TrackDiv>
+          <TrackLogo src={trackIt} alt="TrackIt" />
+        </TrackDiv>
+        <BobLogo src={bob} alt="Bob" />
+      </Nav>
       <Container>
         <Day>
-          <Title>Segunda-Feira</Title>
+          <Title>Segunda-Feira, 17/05</Title>
           <NoHabitsText>Nenhum hábito concluído hoje.</NoHabitsText>
         </Day>
         <HabitsContainer>
@@ -19,7 +26,6 @@ const TodayPage = () => {
                 <InfoText>Seu recorde: 3 dias</InfoText>
               </HabitInfo>
             </HabitCardText>
-
             <HabitIconWrapper>
               <HabitIcon />
             </HabitIconWrapper>
@@ -39,9 +45,33 @@ const Wrapper = styled.div`
   background: #e5e5e5;
 `;
 
+const TrackLogo = styled.img`
+  width: 97px;
+  height: 49px;
+`;
+
+const TrackDiv = styled.div`
+  display: flex;
+`;
+
+const BobLogo = styled.img`
+  width: 51px;
+  height: 51px;
+`;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const Nav = styled.nav`
+  height: 70px;
+  background: rgb(18, 107, 165);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Day = styled.div`
@@ -51,14 +81,19 @@ const Day = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 20px;
-  font-weight: bold;
-  color: #000;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 22.976px;
+  line-height: 29px;
+  color: #126ba5;
 `;
 
 const NoHabitsText = styled.p`
-  font-size: 16px;
-  color: #888;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 17.976px;
+  line-height: 22px;
+  color: #bababa;
 `;
 
 const HabitsContainer = styled.div`
@@ -73,15 +108,12 @@ const HabitCard = styled.div`
   background: #ffffff;
   border-radius: 5px;
   margin: 16px;
-  padding: 16px;
   display: flex;
   align-items: center;
 `;
 
 const HabitCardText = styled.div`
-  width: 340px;
-  background: #ffffff;
-  border-radius: 5px;
+  flex: 1;
   margin: 16px;
   padding: 16px;
   display: flex;
@@ -96,16 +128,20 @@ const HabitIconWrapper = styled.div`
   justify-content: center;
 `;
 
-const HabitIcon = styled(FiCheckCircle)`
-  width: 50px;
-  height: 50px;
+const HabitIcon = styled(AiFillCheckSquare)`
+  width: 69px;
+  height: 69px;
+  color: #ebebeb;
+  border: 1px solid #e7e7e7;
+  border-radius: 5px;
 `;
 
 const HabitTitle = styled.h3`
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 8px;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 19.976px;
+  line-height: 25px;
+  color: #666666;
 `;
 
 const HabitInfo = styled.div`
@@ -115,18 +151,12 @@ const HabitInfo = styled.div`
 `;
 
 const InfoText = styled.p`
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 8px;
-`;
-
-const Nav = styled.nav`
-  height: 60px;
-  background-color: #3312c2;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 12.976px;
+  line-height: 16px;
+  color: #666666;
+  margin-top: 7px;
 `;
 
 const Footer = styled.footer`
