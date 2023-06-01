@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 
 import styled from "styled-components";
 import trackIt from "../assets/TrackIt.png";
-import bob from "../assets/bob.png";
 import logoMais from "../assets/+.svg";
 import lixeira from "../assets/lixeira.png";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -10,14 +10,19 @@ import "react-circular-progressbar/dist/styles.css";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const HabitsPage = () => {
   const { token } = useContext(AuthContext);
+  const { image } = useContext(AuthContext);
+  console.log(image);
 
   const [showAddHabit, setShowAddHabit] = useState(false);
+
   const [selectedDays, setSelectedDays] = useState([]);
   const [habitName, setHabitName] = useState("");
   const [habits, setHabits] = useState([]);
+  const navigate = useNavigate();
   const daysOfWeekButtons = [
     { day: "D", value: "1" },
     { day: "S", value: "2" },
@@ -42,6 +47,9 @@ const HabitsPage = () => {
     } else {
       setSelectedDays([...selectedDays, day]);
     }
+  };
+  const handleHabits = () => {
+    navigate("/hoje");
   };
   const handleNameChange = (event) => {
     setHabitName(event.target.value);
@@ -104,23 +112,29 @@ const HabitsPage = () => {
   };
 
   const handleDeleteHabit = (habitId) => {
-    axios
-      .delete(
-        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Habit deleted successfully:", response.data);
-        handleGetHabits();
-      })
-      .catch((error) => {
-        console.log("Error deleting habit:", error);
-        console.log(habitId);
-      });
+    const confirmed = window.confirm(
+      "Você realmente deseja delezar esse hábito?"
+    );
+
+    if (confirmed) {
+      axios
+        .delete(
+          `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("Habit deleted successfully:", response.data);
+          handleGetHabits();
+        })
+        .catch((error) => {
+          console.log("Error deleting habit:", error);
+          console.log(habitId);
+        });
+    }
   };
 
   return (
@@ -129,7 +143,7 @@ const HabitsPage = () => {
         <TrackDiv>
           <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
-        <BobLogo src={bob} alt="Bob" />
+        <UserImage src={image} alt="Bob" />
       </Nav>
       <Container>
         <HabilitsCreator>
@@ -188,14 +202,14 @@ const HabitsPage = () => {
         </HabitsContainer>
       </Container>
       <Footer>
-        <FooterTitle>Hábitos</FooterTitle>
+        <FooterTitle onClick={() => handleHabits()}>Hábitos</FooterTitle>
         <StyledCircularProgressbar
           value={66}
           text="Hoje"
           strokeWidth={10}
           styles={{
             path: {
-              stroke: "#52b6ff",
+              stroke: "#3fb61b",
               strokeLinecap: "butt",
               transition: "stroke-dashoffset 0.5s ease 0s",
             },
@@ -234,9 +248,10 @@ const TrackLogo = styled.img`
 const TrackDiv = styled.div`
   display: flex;
 `;
-const BobLogo = styled.img`
+const UserImage = styled.img`
   width: 51px;
   height: 51px;
+  border-radius: 98.5px;
 `;
 const MaisLogo = styled.img`
   width: 16px;
@@ -345,6 +360,7 @@ const Footer = styled.footer`
   position: fixed;
   bottom: 0;
   width: 100%;
+  background: #ffffff;
 `;
 
 const AddHabitScreen = styled.div`

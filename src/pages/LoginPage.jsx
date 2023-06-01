@@ -12,7 +12,7 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const { updateToken } = useContext(AuthContext);
+  const { updateToken, updateUserImage } = useContext(AuthContext); // Adicione updateUserImage ao contexto
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -35,14 +35,13 @@ const LoginPage = () => {
         "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
         userData
       );
-      console.log(response.data);
 
-      const { token } = response.data;
+      const { token, image } = response.data; // Obtenha a imagem do objeto de resposta
       updateToken(token);
+      updateUserImage(image);
+      console.log(image); // Armazene a imagem no contexto
 
-      console.log(token);
       // Redirecionar para a rota desejada após o login bem-sucedido
-      // Você pode substituir "/habitos" pela rota desejada
       navigate("/habitos");
     } catch (error) {
       console.log(error);
