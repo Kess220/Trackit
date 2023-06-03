@@ -19,6 +19,7 @@ const HabitsPage = () => {
   console.log(habitList, completedHabits);
 
   const [showAddHabit, setShowAddHabit] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const [selectedDays, setSelectedDays] = useState([]);
   const [habitName, setHabitName] = useState("");
@@ -73,6 +74,16 @@ const HabitsPage = () => {
   };
 
   const handleSave = () => {
+    setSaving(true);
+
+    if (selectedDays.length === 0) {
+      alert(
+        "Por favor, escolha pelo menos 1 dia da semana para salvar o hábito."
+      );
+      setSaving(false);
+      return;
+    }
+
     const habitData = {
       name: habitName,
       days: selectedDays.map((day) => parseInt(day)),
@@ -97,9 +108,12 @@ const HabitsPage = () => {
       })
       .catch((error) => {
         console.log("Error saving habit:", error);
+        alert(error.message);
+      })
+      .finally(() => {
+        setSaving(false);
       });
   };
-
   const handleGetHabits = () => {
     axios
       .get(
@@ -156,13 +170,18 @@ const HabitsPage = () => {
       <Container>
         <HabilitsCreator>
           <Title>Meus Hábitos</Title>
-          <AddButton data-test="habit-create-btn" onClick={handleAddHabit}>
+          <AddButton
+            disabled={saving}
+            data-test="habit-create-btn"
+            onClick={handleAddHabit}
+          >
             <MaisLogo src={logoMais} alt="Mais" />
           </AddButton>
         </HabilitsCreator>
         {showAddHabit && (
           <AddHabitScreen data-test="habit-create-container">
             <Input
+              disabled={saving}
               data-test="habit-name-input"
               type="text"
               placeholder="Nome do hábito"
@@ -172,6 +191,7 @@ const HabitsPage = () => {
             <DaysOfWeek>
               {daysOfWeekButtons.map((day) => (
                 <DayButton
+                  disabled={saving}
                   data-test="habit-day"
                   key={day.value}
                   selected={selectedDays.includes(day.value)}
@@ -184,12 +204,14 @@ const HabitsPage = () => {
 
             <ButtonContainer>
               <CancelButton
+                disabled={saving}
                 data-test="habit-create-cancel-btn"
                 onClick={handleCancel}
               >
                 Cancelar
               </CancelButton>
               <SaveButton
+                disabled={saving}
                 data-test="habit-create-save-btn"
                 onClick={handleSave}
               >
@@ -231,11 +253,15 @@ const HabitsPage = () => {
         )}
       </Container>
       <Footer data-test="menu">
-        <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
+        <FooterTitle
+          disabled={saving}
+          data-test="habit-link"
+          onClick={() => handleHabits()}
+        >
           Hábitos
         </FooterTitle>
 
-        <ProgressContainer onClick={() => handleToday()}>
+        <ProgressContainer disabled={saving} onClick={() => handleToday()}>
           <CircularProgressbar
             data-test="today-link"
             value={progress}
@@ -270,7 +296,11 @@ const HabitsPage = () => {
           />
         </ProgressContainer>
 
-        <FooterTitle onClick={() => handleHistoric()} data-test="history-link">
+        <FooterTitle
+          disabled={saving}
+          onClick={() => handleHistoric()}
+          data-test="history-link"
+        >
           Histórico
         </FooterTitle>
       </Footer>
@@ -509,6 +539,7 @@ const CancelButton = styled.button`
   cursor: pointer;
   width: 84px;
   height: 35px;
+  font-size: 15.976px;
 `;
 
 const SaveButton = styled.button`
@@ -520,6 +551,7 @@ const SaveButton = styled.button`
   cursor: pointer;
   width: 84px;
   height: 35px;
+  font-size: 15.976px;
   margin-right: 6px;
 `;
 

@@ -116,7 +116,9 @@ const SignUpPage = () => {
           {!loading && "Cadastrar"}
         </Button>
       </form>
-      <SignupLink to="/">Já tem uma conta? Faça login!</SignupLink>
+      <SignupLink data-test="login-link" no link to="/">
+        Já tem uma conta? Faça login!
+      </SignupLink>
     </Wrapper>
   );
 };
