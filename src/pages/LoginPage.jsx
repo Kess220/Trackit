@@ -57,6 +57,7 @@ const LoginPage = () => {
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <div>
           <Input
+            data-test="email-input"
             type="email"
             placeholder="email"
             value={email}
@@ -65,15 +66,20 @@ const LoginPage = () => {
         </div>
         <div>
           <Input
+            data-test="password-input"
             type="password"
             placeholder="senha"
             value={password}
             onChange={handlePasswordChange}
           />
         </div>
-        <Button type="submit">Entrar</Button>
+        <Button data-test="login-btn" type="submit">
+          Entrar
+        </Button>
       </form>
-      <Link to="/cadastro">Não tem uma conta? Cadastre-se!</Link>
+      <Link data-test="signup-link" to="/cadastro">
+        Não tem uma conta? Cadastre-se!
+      </Link>
     </Wrapper>
   );
 };

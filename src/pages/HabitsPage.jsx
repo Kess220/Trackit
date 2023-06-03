@@ -5,17 +5,18 @@ import styled from "styled-components";
 import trackIt from "../assets/TrackIt.png";
 import logoMais from "../assets/+.svg";
 import lixeira from "../assets/lixeira.png";
-import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { CircularProgressbar } from "react-circular-progressbar";
 
 const HabitsPage = () => {
-  const { token } = useContext(AuthContext);
-  const { image } = useContext(AuthContext);
-  console.log(image);
+  const { image, token, completedHabits, habitList } = useContext(AuthContext);
+  const progress = (completedHabits / habitList.length) * 100;
+
+  console.log(habitList, completedHabits);
 
   const [showAddHabit, setShowAddHabit] = useState(false);
 
@@ -137,11 +138,15 @@ const HabitsPage = () => {
     }
   };
 
+  const oi = () => {
+    console.log(completedHabits, habitList);
+  };
+
   return (
     <Wrapper>
       <Nav>
         <TrackDiv>
-          <TrackLogo src={trackIt} alt="TrackIt" />
+          <TrackLogo onClick={() => oi()} src={trackIt} alt="TrackIt" />
         </TrackDiv>
         <UserImage src={image} alt="Bob" />
       </Nav>
@@ -203,23 +208,35 @@ const HabitsPage = () => {
       </Container>
       <Footer>
         <FooterTitle onClick={() => handleHabits()}>Hábitos</FooterTitle>
-        <StyledCircularProgressbar
-          value={66}
+
+        <CircularProgressbar
+          value={progress}
           text="Hoje"
-          strokeWidth={10}
+          background
+          backgroundPadding={6}
           styles={{
             path: {
-              stroke: "#3fb61b",
-              strokeLinecap: "butt",
+              stroke: "#FFFFFF",
+              strokeLinecap: "round",
               transition: "stroke-dashoffset 0.5s ease 0s",
             },
             trail: {
-              stroke: "#d6d6d6",
+              stroke: "transparent", // Remove o rastro cinza
             },
+
             text: {
-              fill: "#52b6ff",
-              fontSize: "16px",
-              fontWeight: "bold",
+              fill: "#ffffff",
+              fontSize: "18px",
+              fontFamily: "Lexend Deca",
+              fontWeight: "400",
+            },
+            background: {
+              fill: "#52B6FF",
+            },
+            root: {
+              width: "91px",
+              height: "91px",
+              marginBottom: "40px",
             },
           }}
         />
@@ -236,11 +253,6 @@ const Wrapper = styled.div`
   background: #e5e5e5;
 `;
 
-const StyledCircularProgressbar = styled(CircularProgressbar)`
-  width: 91px;
-  height: 91px;
-  margin-bottom: 40px;
-`;
 const TrackLogo = styled.img`
   width: 97px;
   height: 49px;

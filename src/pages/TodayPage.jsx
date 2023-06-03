@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { AiFillCheckSquare } from "react-icons/ai";
 import { AuthContext } from "../components/AuthContext";
@@ -8,15 +8,24 @@ import "react-circular-progressbar/dist/styles.css";
 import trackIt from "../assets/TrackIt.png";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
-import "react-circular-progressbar/dist/styles.css";
 import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 dayjs.locale("pt-br");
 
 const TodayPage = () => {
-  const { image, token } = useContext(AuthContext);
-  const [habits, setHabits] = useState([]);
-  const [completedHabits, setCompletedHabits] = useState(0);
+  const {
+    image,
+    token,
+    habitList,
+    updateHabitList,
+    completedHabits,
+    updateCompletedHabits,
+  } = useContext(AuthContext);
+
+  useEffect(() => {
+    handleGetHabits();
+  }, []);
 
   const handleGetHabits = () => {
     axios
@@ -29,7 +38,7 @@ const TodayPage = () => {
         }
       )
       .then((response) => {
-        setHabits(response.data);
+        updateHabitList(response.data);
         console.log("Habits retrieved successfully:", response.data);
       })
       .catch((error) => {
@@ -38,23 +47,17 @@ const TodayPage = () => {
   };
 
   useEffect(() => {
-    handleGetHabits();
-  }, []);
-
-  useEffect(() => {
-    // Calculate the number of completed habits
-    const countCompletedHabits = habits.filter(
+    const countCompletedHabits = habitList.filter(
       (habit) => habit.completed
     ).length;
-    setCompletedHabits(countCompletedHabits);
-  }, [habits]);
+    updateCompletedHabits(countCompletedHabits);
+  }, [habitList]);
 
   const toggleHabitCompletion = (habitId) => {
-    setHabits((prevHabits) =>
-      prevHabits.map((habit) =>
-        habit.id === habitId ? { ...habit, completed: !habit.completed } : habit
-      )
+    const updatedHabitList = habitList.map((habit) =>
+      habit.id === habitId ? { ...habit, completed: !habit.completed } : habit
     );
+    updateHabitList(updatedHabitList);
   };
 
   return (
@@ -68,11 +71,16 @@ const TodayPage = () => {
       <Container>
         <Day>
           <Title>{dayjs().format("dddd, DD/MM")}</Title>
-
-          <NoHabitsText>Nenhum hábito concluído hoje.</NoHabitsText>
+          {completedHabits === 0 ? (
+            <NoHabitsText>Nenhum hábito concluído hoje.</NoHabitsText>
+          ) : (
+            <HabitsText>
+              {completedHabits} hábito(s) concluído(s) hoje.
+            </HabitsText>
+          )}
         </Day>
         <HabitsContainer>
-          {habits.map((habit) => (
+          {habitList.map((habit) => (
             <HabitCard
               key={habit.id}
               completed={habit.completed}
@@ -96,9 +104,8 @@ const TodayPage = () => {
       </Container>
       <Footer>
         <FooterTitle>Hábitos</FooterTitle>
-
         <CircularProgressbar
-          value={(completedHabits / habits.length) * 100}
+          value={(completedHabits / habitList.length) * 100}
           text="Hoje"
           background
           backgroundPadding={6}
@@ -111,7 +118,6 @@ const TodayPage = () => {
             trail: {
               stroke: "transparent", // Remove o rastro cinza
             },
-
             text: {
               fill: "#ffffff",
               fontSize: "18px",
@@ -128,7 +134,6 @@ const TodayPage = () => {
             },
           }}
         />
-
         <FooterTitle>Histórico</FooterTitle>
       </Footer>
     </Wrapper>
@@ -200,6 +205,14 @@ const NoHabitsText = styled.p`
   font-size: 17.976px;
   line-height: 22px;
   color: #bababa;
+`;
+
+const HabitsText = styled.p`
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 17.976px;
+  line-height: 22px;
+  color: #666666;
 `;
 
 const HabitsContainer = styled.div`
