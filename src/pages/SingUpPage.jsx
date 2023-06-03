@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // State for loading status
+
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -29,6 +32,8 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true); // Set loading to true when signup starts
 
     try {
       const userData = {
@@ -50,10 +55,11 @@ const SignUpPage = () => {
 
       console.log(response.data);
       // Redirecionar para a rota inicial após o cadastro
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
-      setError("Ocorreu um erro ao cadastrar. Por favor, tente novamente.");
       alert("Ocorreu um erro ao cadastrar. Por favor, tente novamente.");
+    } finally {
+      setLoading(false); // Set loading to false after signup is completed
     }
   };
 
@@ -61,7 +67,6 @@ const SignUpPage = () => {
     <Wrapper>
       <Logo src={logo} alt="Logo" />
       <form onSubmit={handleSubmit}>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div>
           <Input
             data-test="email-input"
@@ -69,6 +74,7 @@ const SignUpPage = () => {
             placeholder="email"
             value={email}
             onChange={handleEmailChange}
+            disabled={loading} // Disable input field if loading
           />
         </div>
         <div>
@@ -78,6 +84,7 @@ const SignUpPage = () => {
             placeholder="senha"
             value={password}
             onChange={handlePasswordChange}
+            disabled={loading} // Disable input field if loading
           />
         </div>
         <div>
@@ -87,6 +94,7 @@ const SignUpPage = () => {
             placeholder="nome"
             value={name}
             onChange={handleNameChange}
+            disabled={loading} // Disable input field if loading
           />
         </div>
         <div>
@@ -96,15 +104,19 @@ const SignUpPage = () => {
             placeholder="URL da foto"
             value={image}
             onChange={handleImageChange}
+            disabled={loading} // Disable input field if loading
           />
         </div>
-        <Button data-test="signup-btn" type="submit">
-          Cadastrar
+        <Button data-test="signup-btn" type="submit" disabled={loading}>
+          <span>
+            {loading && (
+              <ThreeDots type="Oval" color="#FFF" height={40} width={40} />
+            )}
+          </span>
+          {!loading && "Cadastrar"}
         </Button>
       </form>
-      <Link data-test="login-link" to="/">
-        Já tem uma conta? Faça login!
-      </Link>
+      <SignupLink to="/">Já tem uma conta? Faça login!</SignupLink>
     </Wrapper>
   );
 };
@@ -164,9 +176,23 @@ const Button = styled.button`
   font-size: 20.976px;
   line-height: 26px;
   text-align: center;
+  position: relative;
+
+  span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
-const ErrorMessage = styled.p`
-  color: red;
-  margin-bottom: 10px;
+const SignupLink = styled(Link)`
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13.976px;
+  line-height: 17px;
+  text-align: center;
+  text-decoration-line: underline;
+  color: #52b6ff;
 `;

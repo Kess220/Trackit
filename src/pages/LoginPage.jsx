@@ -4,15 +4,16 @@ import styled from "styled-components";
 import logo from "../assets/logo.png";
 import axios from "axios";
 import { AuthContext } from "../components/AuthContext";
+import { ThreeDots } from "react-loader-spinner";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // State for loading status
 
   const navigate = useNavigate();
 
-  const { updateToken, updateUserImage } = useContext(AuthContext); // Adicione updateUserImage ao contexto
+  const { updateToken, updateUserImage } = useContext(AuthContext);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -25,6 +26,8 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    setLoading(true); // Set loading to true when login starts
+
     try {
       const userData = {
         email: email,
@@ -36,17 +39,15 @@ const LoginPage = () => {
         userData
       );
 
-      const { token, image } = response.data; // Obtenha a imagem do objeto de resposta
+      const { token, image } = response.data;
       updateToken(token);
       updateUserImage(image);
-      console.log(image); // Armazene a imagem no contexto
+      console.log(image);
 
-      // Redirecionar para a rota desejada após o login bem-sucedido
       navigate("/hoje");
     } catch (error) {
-      console.log(error);
-
-      setError("Ocorreu um erro ao fazer login. Verifique suas credenciais.");
+      setLoading(false); // Set loading to false after displaying error alert
+      alert("Ocorreu um erro ao fazer login. Verifique suas credenciais.");
     }
   };
 
@@ -54,7 +55,6 @@ const LoginPage = () => {
     <Wrapper>
       <Logo src={logo} alt="Logo" />
       <form onSubmit={handleLogin}>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div>
           <Input
             data-test="email-input"
@@ -62,6 +62,7 @@ const LoginPage = () => {
             placeholder="email"
             value={email}
             onChange={handleEmailChange}
+            disabled={loading} // Disable input field if loading
           />
         </div>
         <div>
@@ -71,15 +72,26 @@ const LoginPage = () => {
             placeholder="senha"
             value={password}
             onChange={handlePasswordChange}
+            disabled={loading} // Disable input field if loading
           />
         </div>
-        <Button data-test="login-btn" type="submit">
-          Entrar
+        <Button
+          data-test="login-btn"
+          type="submit"
+          disabled={loading}
+          loading={loading}
+        >
+          <span>
+            {loading && (
+              <ThreeDots type="Oval" color="#FFF" height={40} width={40} />
+            )}
+          </span>
+          {!loading && "Entrar"}
         </Button>
       </form>
-      <Link data-test="signup-link" to="/cadastro">
+      <SignupLink data-test="signup-link" to="/cadastro">
         Não tem uma conta? Cadastre-se!
-      </Link>
+      </SignupLink>
     </Wrapper>
   );
 };
@@ -139,9 +151,24 @@ const Button = styled.button`
   font-size: 20.976px;
   line-height: 26px;
   text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > span {
+    visibility: ${({ loading }) => (loading ? "visible" : "hidden")};
+    position: absolute;
+  }
 `;
 
-const ErrorMessage = styled.p`
-  color: red;
-  margin-bottom: 10px;
+const SignupLink = styled(Link)`
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13.976px;
+  line-height: 17px;
+  text-align: center;
+  text-decoration-line: underline;
+  color: #52b6ff;
 `;

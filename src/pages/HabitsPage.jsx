@@ -197,31 +197,38 @@ const HabitsPage = () => {
               </SaveButton>
             </ButtonContainer>
           </AddHabitScreen>
-        )}
-        <HabitsContainer>
-          {habits.map((habit) => (
-            <Habit data-test="habit-container" key={habit.id}>
-              <HabitName data-test="habit-name">{habit.name}</HabitName>
-              <DeletIcon
-                data-test="habit-delete-btn"
-                src={lixeira}
-                onClick={() => handleDeleteHabit(habit.id)}
-              />
+        )}{" "}
+        {habits.length === 0 ? (
+          <NoHabitsMessage>
+            Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para
+            começar a trackear!
+          </NoHabitsMessage>
+        ) : (
+          <HabitsContainer>
+            {habits.map((habit) => (
+              <Habit data-test="habit-container" key={habit.id}>
+                <HabitName data-test="habit-name">{habit.name}</HabitName>
+                <DeletIcon
+                  data-test="habit-delete-btn"
+                  src={lixeira}
+                  onClick={() => handleDeleteHabit(habit.id)}
+                />
 
-              <DaysOfWeek>
-                {daysOfWeekButtons.map((day) => (
-                  <DayButton
-                    data-test="habit-day"
-                    key={day.value}
-                    selected={habit.days.includes(parseInt(day.value))}
-                  >
-                    {day.day}
-                  </DayButton>
-                ))}
-              </DaysOfWeek>
-            </Habit>
-          ))}
-        </HabitsContainer>
+                <DaysOfWeek>
+                  {daysOfWeekButtons.map((day) => (
+                    <DayButton
+                      data-test="habit-day"
+                      key={day.value}
+                      selected={habit.days.includes(parseInt(day.value))}
+                    >
+                      {day.day}
+                    </DayButton>
+                  ))}
+                </DaysOfWeek>
+              </Habit>
+            ))}
+          </HabitsContainer>
+        )}
       </Container>
       <Footer data-test="menu">
         <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
@@ -277,6 +284,16 @@ const Wrapper = styled.div`
   min-height: 100vh;
   background: #e5e5e5;
 `;
+const NoHabitsMessage = styled.p`
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17.976px;
+  line-height: 22px;
+
+  color: #666666;
+  margin-left: 17px;
+`;
 const ProgressContainer = styled.div`
   cursor: pointer;
 `;
@@ -328,6 +345,7 @@ const Habit = styled.div`
   position: relative;
   overflow: hidden;
   margin-bottom: 10px;
+  margin-left: 10px;
 `;
 
 const HabitName = styled.h1`
@@ -412,6 +430,8 @@ const AddHabitScreen = styled.div`
   background: #ffffff;
   border-radius: 5px;
   margin-left: 10px;
+  margin-bottom: 29px;
+  margin-top: 10px;
 `;
 
 const Input = styled.input`
