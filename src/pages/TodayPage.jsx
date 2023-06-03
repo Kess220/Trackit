@@ -11,6 +11,7 @@ import "dayjs/locale/pt-br";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
+import { isToday } from "date-fns";
 
 dayjs.locale("pt-br");
 
@@ -24,12 +25,13 @@ const TodayPage = () => {
     updateCompletedHabits,
   } = useContext(AuthContext);
   const totalHabits = habitList.length;
+  localStorage.setItem("token", token);
   const percentageCompleted =
     totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0;
   useEffect(() => {
     handleGetHabits();
+    restoreCompletedHabits(); // Restaurar hábitos marcados ao carregar a página
   }, []);
-
   const handleGetHabits = () => {
     axios
       .get(
@@ -54,14 +56,52 @@ const TodayPage = () => {
       (habit) => habit.completed
     ).length;
     updateCompletedHabits(countCompletedHabits);
+
+    // Salvar hábitos marcados no localStorage
+    saveCompletedHabits(habitList);
   }, [habitList]);
 
-  const toggleHabitCompletion = (habitId) => {
-    const updatedHabitList = habitList.map((habit) =>
-      habit.id === habitId ? { ...habit, completed: !habit.completed } : habit
-    );
-    updateHabitList(updatedHabitList);
+  const saveCompletedHabits = (habits) => {
+    localStorage.setItem("completedHabits", JSON.stringify(habits));
   };
+
+  const restoreCompletedHabits = () => {
+    const savedHabits = localStorage.getItem("completedHabits");
+    if (savedHabits) {
+      const parsedHabits = JSON.parse(savedHabits);
+      updateHabitList(parsedHabits);
+    }
+  };
+  const toggleHabitCompletion = (habitId) => {
+    const habit = habitList.find((habit) => habit.id === habitId);
+    if (!habit) {
+      return;
+    }
+
+    axios
+      .post(
+        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}/check`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        const updatedHabitList = habitList.map((habit) =>
+          habit.id === habitId
+            ? { ...habit, completed: !habit.completed }
+            : habit
+        );
+        updateHabitList(updatedHabitList);
+        console.log("Habit marked as complete:", response.data);
+      })
+      .catch((error) => {
+        console.log("Error marking habit as complete:", error);
+      });
+  };
+
   const navigate = useNavigate();
 
   const handleHabits = () => {

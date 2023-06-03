@@ -70,7 +70,6 @@ const HabitsPage = () => {
 
   const handleCancel = () => {
     setShowAddHabit(false);
-    setSelectedDays([]);
   };
 
   const handleSave = () => {
@@ -103,7 +102,7 @@ const HabitsPage = () => {
         console.log("Habit saved successfully:", response.data);
         setShowAddHabit(false);
         setSelectedDays([]);
-        setHabitName(""); // Limpar o valor do input
+        setHabitName("");
         handleGetHabits();
       })
       .catch((error) => {

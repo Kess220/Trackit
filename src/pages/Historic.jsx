@@ -3,12 +3,13 @@ import trackIt from "../assets/TrackIt.png";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../components/AuthContext";
 
-const TodayPage = () => {
-  const { image, completedHabits, habitList } = useContext(AuthContext);
+const Historic = () => {
+  const { image, token, completedHabits, habitList } = useContext(AuthContext);
   const progress = (completedHabits / habitList.length) * 100;
+  const [habitHistory, setHabitHistory] = useState([]);
 
   const navigate = useNavigate();
 
@@ -22,6 +23,28 @@ const TodayPage = () => {
   const handleHistoric = () => {
     navigate("/historico");
   };
+
+  useEffect(() => {
+    const fetchHabitHistory = async () => {
+      try {
+        const response = await fetch(
+          "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        setHabitHistory(data);
+      } catch (error) {
+        console.log("Error fetching habit history:", error);
+      }
+    };
+
+    fetchHabitHistory();
+  }, [token]);
+
   return (
     <Wrapper>
       <Nav>
@@ -31,14 +54,33 @@ const TodayPage = () => {
         <UserImage data-test="avatar" src={image} alt="Bob" />
       </Nav>
       <Container>
-        <Day>
-          <Title>Historico</Title>
+        {Array.isArray(habitHistory) && habitHistory.length > 0 ? (
+          habitHistory.map((entry) => (
+            <Day key={entry.day}>
+              <Title>{entry.day}</Title>
+              {entry.habits.length === 0 ? (
+                <NoHabitsText>
+                  Em breve você poderá ver o histórico dos seus hábitos aqui!
+                </NoHabitsText>
+              ) : (
+                entry.habits.map((habit) => (
+                  <HabitCard key={habit.id}>
+                    <HabitTitle>{habit.name}</HabitTitle>
+                    <HabitInfo className={habit.done ? "done" : ""}>
+                      {habit.done ? "Concluído" : "Não concluído"}
+                    </HabitInfo>
+                  </HabitCard>
+                ))
+              )}
+            </Day>
+          ))
+        ) : (
           <NoHabitsText>
-            Em breve voce podera ver o historico dos seus habitos aqui!
+            Em breve você poderá ver o histórico dos seus hábitos aqui!
           </NoHabitsText>
-        </Day>
-        <HabitsContainer></HabitsContainer>
+        )}
       </Container>
+
       <Footer>
         <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
           Hábitos
@@ -97,6 +139,40 @@ const ProgressContainer = styled.div`
 `;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const HabitCard = styled.div`
+  width: 340px;
+  height: 94px;
+  background: #ffffff;
+  border-radius: 5px;
+  margin: 16px;
+  display: flex;
+  align-items: center;
+  .circular-progressbar {
+    width: 69px;
+    height: 69px;
+  }
+`;
+const HabitCardText = styled.div`
+  flex: 1;
+  margin: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+`;
+const HabitTitle = styled.h3`
+  font-family: "Lexend Deca", sans-serif;
+  font-weight: 400;
+  font-size: 19.976px;
+  line-height: 25px;
+  color: #666666;
+`;
+
+const HabitInfo = styled.div`
+  margin-top: auto;
   display: flex;
   flex-direction: column;
 `;
@@ -179,4 +255,4 @@ const UserImage = styled.img`
   border-radius: 98.5px;
 `;
 
-export default TodayPage;
+export default Historic;

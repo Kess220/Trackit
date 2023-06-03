@@ -1,4 +1,5 @@
-import { useState, useContext } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
@@ -14,6 +15,16 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const { updateToken, updateUserImage } = useContext(AuthContext);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const { token, image } = JSON.parse(storedUser);
+      updateToken(token);
+      updateUserImage(image);
+      navigate("/hoje");
+    }
+  }, []);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -42,7 +53,13 @@ const LoginPage = () => {
       const { token, image } = response.data;
       updateToken(token);
       updateUserImage(image);
-      console.log(image);
+
+      // Save user object in Local Storage
+      const user = {
+        token,
+        image,
+      };
+      localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/hoje");
     } catch (error) {
