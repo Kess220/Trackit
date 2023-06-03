@@ -70,11 +70,13 @@ const TodayPage = () => {
       </Nav>
       <Container>
         <Day>
-          <Title>{dayjs().format("dddd, DD/MM")}</Title>
+          <Title data-test="today">{dayjs().format("dddd, DD/MM")}</Title>
           {completedHabits === 0 ? (
-            <NoHabitsText>Nenhum hábito concluído hoje.</NoHabitsText>
+            <NoHabitsText data-test="today-counter">
+              Nenhum hábito concluído hoje.
+            </NoHabitsText>
           ) : (
-            <HabitsText>
+            <HabitsText data-test="today-counter">
               {completedHabits} hábito(s) concluído(s) hoje.
             </HabitsText>
           )}
@@ -82,21 +84,29 @@ const TodayPage = () => {
         <HabitsContainer>
           {habitList.map((habit) => (
             <HabitCard
+              data-test="today-habit-container"
               key={habit.id}
               completed={habit.completed}
               onClick={() => toggleHabitCompletion(habit.id)}
             >
               <HabitCardText>
-                <HabitTitle>{habit.name}</HabitTitle>
+                <HabitTitle data-test="today-habit-name">
+                  {habit.name}
+                </HabitTitle>
                 <HabitInfo>
-                  <InfoText>
+                  <InfoText data-test="today-habit-sequence">
                     Sequência atual: {habit.currentSequence} dias
                   </InfoText>
-                  <InfoText>Seu recorde: {habit.highestSequence} dias</InfoText>
+                  <InfoText data-test="today-habit-record">
+                    Seu recorde: {habit.highestSequence} dias
+                  </InfoText>
                 </HabitInfo>
               </HabitCardText>
               <HabitIconWrapper>
-                <HabitIcon completed={habit.completed} />
+                <HabitIcon
+                  data-test="today-habit-check-btn"
+                  completed={habit.completed}
+                />
               </HabitIconWrapper>
             </HabitCard>
           ))}

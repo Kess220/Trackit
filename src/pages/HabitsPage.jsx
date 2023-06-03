@@ -138,28 +138,25 @@ const HabitsPage = () => {
     }
   };
 
-  const oi = () => {
-    console.log(completedHabits, habitList);
-  };
-
   return (
     <Wrapper>
-      <Nav>
+      <Nav data-test="header">
         <TrackDiv>
-          <TrackLogo onClick={() => oi()} src={trackIt} alt="TrackIt" />
+          <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
-        <UserImage src={image} alt="Bob" />
+        <UserImage data-test="avatar" src={image} alt="Bob" />
       </Nav>
       <Container>
         <HabilitsCreator>
           <Title>Meus Hábitos</Title>
-          <AddButton onClick={handleAddHabit}>
+          <AddButton data-test="habit-create-btn" onClick={handleAddHabit}>
             <MaisLogo src={logoMais} alt="Mais" />
           </AddButton>
         </HabilitsCreator>
         {showAddHabit && (
-          <AddHabitScreen>
+          <AddHabitScreen data-test="habit-create-container">
             <Input
+              data-test="habit-name-input"
               type="text"
               placeholder="Nome do hábito"
               value={habitName}
@@ -168,6 +165,7 @@ const HabitsPage = () => {
             <DaysOfWeek>
               {daysOfWeekButtons.map((day) => (
                 <DayButton
+                  data-test="habit-day"
                   key={day.value}
                   selected={selectedDays.includes(day.value)}
                   onClick={() => handleDayClick(day.value)}
@@ -178,16 +176,27 @@ const HabitsPage = () => {
             </DaysOfWeek>
 
             <ButtonContainer>
-              <CancelButton onClick={handleCancel}>Cancelar</CancelButton>
-              <SaveButton onClick={handleSave}>Salvar</SaveButton>
+              <CancelButton
+                data-test="habit-create-cancel-btn"
+                onClick={handleCancel}
+              >
+                Cancelar
+              </CancelButton>
+              <SaveButton
+                data-test="habit-create-save-btn"
+                onClick={handleSave}
+              >
+                Salvar
+              </SaveButton>
             </ButtonContainer>
           </AddHabitScreen>
         )}
         <HabitsContainer>
           {habits.map((habit) => (
-            <Habit key={habit.id}>
-              <HabitName>{habit.name}</HabitName>
+            <Habit data-test="habit-container" key={habit.id}>
+              <HabitName data-test="habit-name">{habit.name}</HabitName>
               <DeletIcon
+                data-test="habit-delete-btn"
                 src={lixeira}
                 onClick={() => handleDeleteHabit(habit.id)}
               />
@@ -195,6 +204,7 @@ const HabitsPage = () => {
               <DaysOfWeek>
                 {daysOfWeekButtons.map((day) => (
                   <DayButton
+                    data-test="habit-day"
                     key={day.value}
                     selected={habit.days.includes(parseInt(day.value))}
                   >
@@ -206,10 +216,13 @@ const HabitsPage = () => {
           ))}
         </HabitsContainer>
       </Container>
-      <Footer>
-        <FooterTitle onClick={() => handleHabits()}>Hábitos</FooterTitle>
+      <Footer data-test="menu">
+        <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
+          Hábitos
+        </FooterTitle>
 
         <CircularProgressbar
+          data-test="today-link"
           value={progress}
           text="Hoje"
           background
@@ -240,7 +253,7 @@ const HabitsPage = () => {
             },
           }}
         />
-        <FooterTitle>Histórico</FooterTitle>
+        <FooterTitle data-test="history-link">Histórico</FooterTitle>
       </Footer>
     </Wrapper>
   );

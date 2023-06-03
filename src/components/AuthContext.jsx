@@ -6,8 +6,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [image, setImage] = useState("");
-  const [completedHabits, setCompletedHabits] = useState(0);
-  const [habitList, setHabitList] = useState([]);
+  const [completedHabits, setCompletedHabits] = useState([]); // Inicialize o estado de completedHabits como um array vazio
+  const [habitList, setHabitList] = useState([]); // Renomeie 'habits' para 'habitList'
 
   const updateToken = (newToken) => {
     setToken(newToken);
@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }) => {
         updateUserImage,
         completedHabits: completedHabits,
         updateCompletedHabits,
-        habitList: habitList,
-        updateHabitList,
+        habitList: habitList, // Renomeie 'habits' para 'habitList'
+        updateHabitList, // Renomeie 'updateHabits' para 'updateHabitList'
       }}
     >
       {children}
