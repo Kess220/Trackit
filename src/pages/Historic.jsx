@@ -1,17 +1,34 @@
 import styled from "styled-components";
 import trackIt from "../assets/TrackIt.png";
-import bob from "../assets/bob.png";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
 
 const TodayPage = () => {
+  const { image, completedHabits, habitList } = useContext(AuthContext);
+  const progress = (completedHabits / habitList.length) * 100;
+
+  const navigate = useNavigate();
+
+  const handleHabits = () => {
+    navigate("/habitos");
+  };
+  const handleToday = () => {
+    navigate("/hoje");
+  };
+
+  const handleHistoric = () => {
+    navigate("/historico");
+  };
   return (
     <Wrapper>
       <Nav>
         <TrackDiv>
           <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
-        <BobLogo src={bob} alt="Bob" />
+        <UserImage data-test="avatar" src={image} alt="Bob" />
       </Nav>
       <Container>
         <Day>
@@ -23,28 +40,46 @@ const TodayPage = () => {
         <HabitsContainer></HabitsContainer>
       </Container>
       <Footer>
-        <FooterTitle>Hábitos</FooterTitle>
-        <StyledCircularProgressbar
-          value={66}
-          text="Hoje"
-          strokeWidth={10}
-          styles={{
-            path: {
-              stroke: "#52b6ff",
-              strokeLinecap: "butt",
-              transition: "stroke-dashoffset 0.5s ease 0s",
-            },
-            trail: {
-              stroke: "#d6d6d6",
-            },
-            text: {
-              fill: "#52b6ff",
-              fontSize: "16px",
-              fontWeight: "bold",
-            },
-          }}
-        />
-        <FooterTitle>Histórico</FooterTitle>
+        <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
+          Hábitos
+        </FooterTitle>
+        <ProgressContainer onClick={() => handleToday()}>
+          <CircularProgressbar
+            data-test="today-link"
+            value={progress}
+            text="Hoje"
+            background
+            backgroundPadding={6}
+            styles={{
+              path: {
+                stroke: "#FFFFFF",
+                strokeLinecap: "round",
+                transition: "stroke-dashoffset 0.5s ease 0s",
+              },
+              trail: {
+                stroke: "transparent", // Remove o rastro cinza
+              },
+
+              text: {
+                fill: "#ffffff",
+                fontSize: "18px",
+                fontFamily: "Lexend Deca",
+                fontWeight: "400",
+              },
+              background: {
+                fill: "#52B6FF",
+              },
+              root: {
+                width: "91px",
+                height: "91px",
+                marginBottom: "40px",
+              },
+            }}
+          />
+        </ProgressContainer>
+        <FooterTitle onClick={() => handleHistoric()} data-test="history-link">
+          Histórico
+        </FooterTitle>
       </Footer>
     </Wrapper>
   );
@@ -57,11 +92,15 @@ const Wrapper = styled.div`
   background: #e5e5e5;
 `;
 
+const ProgressContainer = styled.div`
+  cursor: pointer;
+`;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const FooterTitle = styled.h1`
+const FooterTitle = styled.button`
   font-family: "Lexend Deca";
   font-style: normal;
   font-weight: 400;
@@ -71,8 +110,10 @@ const FooterTitle = styled.h1`
   color: #52b6ff;
   display: flex;
   align-items: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 `;
-
 const Footer = styled.footer`
   height: 70px;
   display: flex;
@@ -81,11 +122,7 @@ const Footer = styled.footer`
   position: fixed;
   bottom: 0;
   width: 100%;
-`;
-const StyledCircularProgressbar = styled(CircularProgressbar)`
-  width: 91px;
-  height: 91px;
-  margin-bottom: 40px;
+  background: #ffffff;
 `;
 
 const Day = styled.div`
@@ -136,9 +173,10 @@ const TrackLogo = styled.img`
 const TrackDiv = styled.div`
   display: flex;
 `;
-const BobLogo = styled.img`
+const UserImage = styled.img`
   width: 51px;
   height: 51px;
+  border-radius: 98.5px;
 `;
 
 export default TodayPage;

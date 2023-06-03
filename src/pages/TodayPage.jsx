@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
 
 dayjs.locale("pt-br");
 
@@ -22,7 +23,9 @@ const TodayPage = () => {
     completedHabits,
     updateCompletedHabits,
   } = useContext(AuthContext);
-
+  const totalHabits = habitList.length;
+  const percentageCompleted =
+    totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0;
   useEffect(() => {
     handleGetHabits();
   }, []);
@@ -59,6 +62,18 @@ const TodayPage = () => {
     );
     updateHabitList(updatedHabitList);
   };
+  const navigate = useNavigate();
+
+  const handleHabits = () => {
+    navigate("/habitos");
+  };
+  const handleToday = () => {
+    navigate("/hoje");
+  };
+
+  const handleHistoric = () => {
+    navigate("/historico");
+  };
 
   return (
     <Wrapper>
@@ -76,8 +91,15 @@ const TodayPage = () => {
               Nenhum hábito concluído hoje.
             </NoHabitsText>
           ) : (
-            <HabitsText data-test="today-counter">
-              {completedHabits} hábito(s) concluído(s) hoje.
+            <HabitsText
+              data-test="today-counter"
+              percentage={percentageCompleted}
+            >
+              {percentageCompleted === 0
+                ? "Nenhum hábito concluído hoje."
+                : `${percentageCompleted.toFixed(
+                    0
+                  )}% de hábitos concluídos hoje.`}
             </HabitsText>
           )}
         </Day>
@@ -113,38 +135,45 @@ const TodayPage = () => {
         </HabitsContainer>
       </Container>
       <Footer>
-        <FooterTitle>Hábitos</FooterTitle>
-        <CircularProgressbar
-          value={(completedHabits / habitList.length) * 100}
-          text="Hoje"
-          background
-          backgroundPadding={6}
-          styles={{
-            path: {
-              stroke: "#FFFFFF",
-              strokeLinecap: "round",
-              transition: "stroke-dashoffset 0.5s ease 0s",
-            },
-            trail: {
-              stroke: "transparent", // Remove o rastro cinza
-            },
-            text: {
-              fill: "#ffffff",
-              fontSize: "18px",
-              fontFamily: "Lexend Deca",
-              fontWeight: "400",
-            },
-            background: {
-              fill: "#52B6FF",
-            },
-            root: {
-              width: "91px",
-              height: "91px",
-              marginBottom: "40px",
-            },
-          }}
-        />
-        <FooterTitle>Histórico</FooterTitle>
+        <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
+          Hábitos
+        </FooterTitle>
+        <ProgressContainer onClick={() => handleToday()}>
+          <CircularProgressbar
+            value={(completedHabits / habitList.length) * 100}
+            text="Hoje"
+            background
+            backgroundPadding={6}
+            styles={{
+              path: {
+                stroke: "#FFFFFF",
+                strokeLinecap: "round",
+                transition: "stroke-dashoffset 0.5s ease 0s",
+              },
+              trail: {
+                stroke: "transparent", // Remove o rastro cinza
+              },
+              text: {
+                fill: "#ffffff",
+                fontSize: "18px",
+                fontFamily: "Lexend Deca",
+                fontWeight: "400",
+              },
+              background: {
+                fill: "#52B6FF",
+              },
+              root: {
+                width: "91px",
+                height: "91px",
+                marginBottom: "40px",
+              },
+            }}
+          />
+        </ProgressContainer>
+
+        <FooterTitle onClick={() => handleHistoric()} data-test="history-link">
+          Histórico
+        </FooterTitle>
       </Footer>
     </Wrapper>
   );
@@ -155,6 +184,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   min-height: 100vh;
   background: #e5e5e5;
+`;
+const ProgressContainer = styled.div`
+  cursor: pointer;
 `;
 
 const TrackLogo = styled.img`
@@ -184,7 +216,7 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-between;
 `;
-const FooterTitle = styled.h1`
+const FooterTitle = styled.button`
   font-family: "Lexend Deca";
   font-style: normal;
   font-weight: 400;
@@ -194,6 +226,9 @@ const FooterTitle = styled.h1`
   color: #52b6ff;
   display: flex;
   align-items: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 `;
 const Day = styled.div`
   display: flex;
@@ -222,7 +257,7 @@ const HabitsText = styled.p`
   font-weight: 400;
   font-size: 17.976px;
   line-height: 22px;
-  color: #666666;
+  color: ${({ percentage }) => (percentage > 0 ? "#8FC549" : "#8FC549")};
 `;
 
 const HabitsContainer = styled.div`

@@ -42,7 +42,7 @@ const LoginPage = () => {
       console.log(image); // Armazene a imagem no contexto
 
       // Redirecionar para a rota desejada após o login bem-sucedido
-      navigate("/habitos");
+      navigate("/hoje");
     } catch (error) {
       console.log(error);
 

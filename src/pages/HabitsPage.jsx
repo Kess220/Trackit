@@ -50,7 +50,14 @@ const HabitsPage = () => {
     }
   };
   const handleHabits = () => {
+    navigate("/habitos");
+  };
+  const handleToday = () => {
     navigate("/hoje");
+  };
+
+  const handleHistoric = () => {
+    navigate("/historico");
   };
   const handleNameChange = (event) => {
     setHabitName(event.target.value);
@@ -221,39 +228,44 @@ const HabitsPage = () => {
           Hábitos
         </FooterTitle>
 
-        <CircularProgressbar
-          data-test="today-link"
-          value={progress}
-          text="Hoje"
-          background
-          backgroundPadding={6}
-          styles={{
-            path: {
-              stroke: "#FFFFFF",
-              strokeLinecap: "round",
-              transition: "stroke-dashoffset 0.5s ease 0s",
-            },
-            trail: {
-              stroke: "transparent", // Remove o rastro cinza
-            },
+        <ProgressContainer onClick={() => handleToday()}>
+          <CircularProgressbar
+            data-test="today-link"
+            value={progress}
+            text="Hoje"
+            background
+            backgroundPadding={6}
+            styles={{
+              path: {
+                stroke: "#FFFFFF",
+                strokeLinecap: "round",
+                transition: "stroke-dashoffset 0.5s ease 0s",
+              },
+              trail: {
+                stroke: "transparent", // Remove o rastro cinza
+              },
 
-            text: {
-              fill: "#ffffff",
-              fontSize: "18px",
-              fontFamily: "Lexend Deca",
-              fontWeight: "400",
-            },
-            background: {
-              fill: "#52B6FF",
-            },
-            root: {
-              width: "91px",
-              height: "91px",
-              marginBottom: "40px",
-            },
-          }}
-        />
-        <FooterTitle data-test="history-link">Histórico</FooterTitle>
+              text: {
+                fill: "#ffffff",
+                fontSize: "18px",
+                fontFamily: "Lexend Deca",
+                fontWeight: "400",
+              },
+              background: {
+                fill: "#52B6FF",
+              },
+              root: {
+                width: "91px",
+                height: "91px",
+                marginBottom: "40px",
+              },
+            }}
+          />
+        </ProgressContainer>
+
+        <FooterTitle onClick={() => handleHistoric()} data-test="history-link">
+          Histórico
+        </FooterTitle>
       </Footer>
     </Wrapper>
   );
@@ -264,6 +276,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   min-height: 100vh;
   background: #e5e5e5;
+`;
+const ProgressContainer = styled.div`
+  cursor: pointer;
 `;
 
 const TrackLogo = styled.img`
@@ -365,7 +380,7 @@ const AddButton = styled.div`
   background: #52b6ff;
 `;
 
-const FooterTitle = styled.h1`
+const FooterTitle = styled.button`
   font-family: "Lexend Deca";
   font-style: normal;
   font-weight: 400;
@@ -375,6 +390,9 @@ const FooterTitle = styled.h1`
   color: #52b6ff;
   display: flex;
   align-items: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 `;
 
 const Footer = styled.footer`

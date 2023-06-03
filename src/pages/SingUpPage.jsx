@@ -64,6 +64,7 @@ const SignUpPage = () => {
         {error && <ErrorMessage>{error}</ErrorMessage>}
         <div>
           <Input
+            data-test="email-input"
             type="email"
             placeholder="email"
             value={email}
@@ -72,6 +73,7 @@ const SignUpPage = () => {
         </div>
         <div>
           <Input
+            data-test="password-input"
             type="password"
             placeholder="senha"
             value={password}
@@ -80,6 +82,7 @@ const SignUpPage = () => {
         </div>
         <div>
           <Input
+            data-test="user-name-input"
             type="text"
             placeholder="nome"
             value={name}
@@ -88,15 +91,20 @@ const SignUpPage = () => {
         </div>
         <div>
           <Input
+            data-test="user-image-input"
             type="text"
             placeholder="URL da foto"
             value={image}
             onChange={handleImageChange}
           />
         </div>
-        <Button type="submit">Cadastrar</Button>
+        <Button data-test="signup-btn" type="submit">
+          Cadastrar
+        </Button>
       </form>
-      <Link to="/">Já tem uma conta? Faça login!</Link>
+      <Link data-test="login-link" to="/">
+        Já tem uma conta? Faça login!
+      </Link>
     </Wrapper>
   );
 };
