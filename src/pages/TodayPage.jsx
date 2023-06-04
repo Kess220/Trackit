@@ -153,11 +153,17 @@ const TodayPage = () => {
                   {habit.name}
                 </HabitTitle>
                 <HabitInfo>
-                  <InfoText data-test="today-habit-sequence">
-                    Sequência atual: {habit.currentSequence} dias
+                  <InfoText>
+                    Sequência atual:{" "}
+                    <SequenceValue completed={habit.done}>
+                      {habit.currentSequence} dias
+                    </SequenceValue>
                   </InfoText>
-                  <InfoText data-test="today-habit-record">
-                    Seu recorde: {habit.highestSequence} dias
+                  <InfoText>
+                    Sequência recorde:{" "}
+                    <SequenceValue completed={habit.done}>
+                      {habit.highestSequence} dias
+                    </SequenceValue>
                   </InfoText>
                 </HabitInfo>
               </HabitCardText>
@@ -367,6 +373,10 @@ const InfoText = styled.p`
   line-height: 16px;
   color: #666666;
   margin-top: 7px;
+`;
+
+const SequenceValue = styled.span`
+  color: ${({ completed }) => (completed ? "#8FC549" : "#666666")};
 `;
 
 const Footer = styled.footer`
