@@ -114,7 +114,7 @@ const TodayPage = () => {
   console.log(`Teste HabitList`, true.toString());
   return (
     <Wrapper>
-      <Nav>
+      <Nav data-test="header">
         <TrackDiv>
           <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
@@ -172,11 +172,11 @@ const TodayPage = () => {
         </HabitsContainer>
       </Container>
       <Footer data-test="menu">
-        <Link data-test="habit-link" to="/habitos">
+        <StyledLink data-test="habit-link" to="/habitos">
           <FooterTitle>Hábitos</FooterTitle>
-        </Link>
+        </StyledLink>
 
-        <Link data-test="today-link" to="/hoje">
+        <StyledLink data-test="today-link" to="/hoje">
           <ProgressContainer>
             <CircularProgressbar
               value={(completedHabits / habitList.length) * 100}
@@ -209,10 +209,10 @@ const TodayPage = () => {
               }}
             />
           </ProgressContainer>
-        </Link>
-        <Link data-test="history-link" to="/historico">
+        </StyledLink>
+        <StyledLink data-test="history-link" to="/historico">
           <FooterTitle>Histórico</FooterTitle>
-        </Link>
+        </StyledLink>
       </Footer>
     </Wrapper>
   );
@@ -244,6 +244,9 @@ const UserImage = styled.img`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const Nav = styled.nav`

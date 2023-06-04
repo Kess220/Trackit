@@ -50,16 +50,7 @@ const HabitsPage = () => {
       setSelectedDays([...selectedDays, day]);
     }
   };
-  const handleHabits = () => {
-    navigate("/habitos");
-  };
-  const handleToday = () => {
-    navigate("/hoje");
-  };
 
-  const handleHistoric = () => {
-    navigate("/historico");
-  };
   const handleNameChange = (event) => {
     setHabitName(event.target.value);
   };
@@ -252,10 +243,10 @@ const HabitsPage = () => {
         )}
       </Container>
       <Footer data-test="menu">
-        <Link data-test="habit-link" to="/habitos">
+        <StyledLink data-test="habit-link" to="/habitos">
           <FooterTitle>Hábitos</FooterTitle>
-        </Link>
-        <Link data-test="today-link" to="/hoje">
+        </StyledLink>
+        <StyledLink data-test="today-link" to="/hoje">
           <ProgressContainer disabled={saving}>
             <CircularProgressbar
               value={progress}
@@ -289,11 +280,11 @@ const HabitsPage = () => {
               }}
             />
           </ProgressContainer>
-        </Link>
+        </StyledLink>
 
-        <Link data-test="history-link" to="/historico">
+        <StyledLink data-test="history-link" to="/historico">
           <FooterTitle>Histórico</FooterTitle>
-        </Link>
+        </StyledLink>
       </Footer>
     </Wrapper>
   );
@@ -352,6 +343,9 @@ const Container = styled.div`
 
 const HabitsContainer = styled.div`
   margin-top: 16px;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const Habit = styled.div`

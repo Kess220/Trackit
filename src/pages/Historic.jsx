@@ -43,7 +43,7 @@ const TodayPage = () => {
 
   return (
     <Wrapper>
-      <Nav>
+      <Nav data-test="header">
         <TrackDiv>
           <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
@@ -77,11 +77,11 @@ const TodayPage = () => {
         <HabitsContainer></HabitsContainer>
       </Container>
       <Footer data-test="menu">
-        <Link data-test="habit-link" to="/habitos">
+        <StyledLink data-test="habit-link" to="/habitos">
           <FooterTitle>Hábitos</FooterTitle>
-        </Link>
+        </StyledLink>
 
-        <Link data-test="today-link" to="/hoje">
+        <StyledLink data-test="today-link" to="/hoje">
           <ProgressContainer onClick={handleToday}>
             <CircularProgressbar
               value={progress}
@@ -114,11 +114,11 @@ const TodayPage = () => {
               }}
             />
           </ProgressContainer>
-        </Link>
+        </StyledLink>
 
-        <Link data-test="history-link" to="/historico">
+        <StyledLink data-test="history-link" to="/historico">
           <FooterTitle>Histórico</FooterTitle>
-        </Link>
+        </StyledLink>
       </Footer>
     </Wrapper>
   );
@@ -129,6 +129,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   min-height: 100vh;
   background: #e5e5e5;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const ProgressContainer = styled.div`
