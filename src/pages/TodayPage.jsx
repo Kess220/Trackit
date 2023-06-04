@@ -121,7 +121,7 @@ const TodayPage = () => {
         <UserImage data-test="avatar" src={image} alt="Bob" />
       </Nav>
       <Container>
-        <Day>
+        <Day data-test="today-counter">
           <Title data-test="today">{dayjs().format("dddd, DD/MM")}</Title>
           {completedHabits === 0 ? (
             <NoHabitsText data-test="today-counter">
@@ -153,13 +153,13 @@ const TodayPage = () => {
                   {habit.name}
                 </HabitTitle>
                 <HabitInfo>
-                  <InfoText>
+                  <InfoText data-test="today-habit-sequence">
                     Sequência atual:{" "}
                     <SequenceValue completed={habit.done}>
                       {habit.currentSequence} dias
                     </SequenceValue>
                   </InfoText>
-                  <InfoText>
+                  <InfoText data-test="today-habit-record">
                     Sequência recorde:{" "}
                     <SequenceValue completed={habit.done}>
                       {habit.highestSequence} dias
