@@ -47,7 +47,6 @@ const LoginPage = () => {
         "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
         userData
       );
-      
 
       const { token, image } = response.data;
       updateToken(token);
@@ -171,6 +170,7 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 7px;
 
   & > span {
     visibility: ${({ loading }) => (loading ? "visible" : "hidden")};

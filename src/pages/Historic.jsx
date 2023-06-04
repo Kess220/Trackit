@@ -3,7 +3,7 @@ import styled from "styled-components";
 import trackIt from "../assets/TrackIt.png";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import axios from "axios";
 
@@ -37,16 +37,8 @@ const TodayPage = () => {
     }
   }, [token]);
 
-  const handleHabits = () => {
-    navigate("/habitos");
-  };
-
   const handleToday = () => {
     navigate("/hoje");
-  };
-
-  const handleHistoric = () => {
-    navigate("/historico");
   };
 
   return (
@@ -85,45 +77,48 @@ const TodayPage = () => {
         <HabitsContainer></HabitsContainer>
       </Container>
       <Footer data-test="menu">
-        <FooterTitle data-test="habit-link" onClick={handleHabits}>
-          Hábitos
-        </FooterTitle>
-        <ProgressContainer onClick={handleToday}>
-          <CircularProgressbar
-            data-test="today-link"
-            value={progress}
-            text="Hoje"
-            background
-            backgroundPadding={6}
-            styles={{
-              path: {
-                stroke: "#FFFFFF",
-                strokeLinecap: "round",
-                transition: "stroke-dashoffset 0.5s ease 0s",
-              },
-              trail: {
-                stroke: "transparent", // Remove o rastro cinza
-              },
-              text: {
-                fill: "#ffffff",
-                fontSize: "18px",
-                fontFamily: "Lexend Deca",
-                fontWeight: "400",
-              },
-              background: {
-                fill: "#52B6FF",
-              },
-              root: {
-                width: "91px",
-                height: "91px",
-                marginBottom: "40px",
-              },
-            }}
-          />
-        </ProgressContainer>
-        <FooterTitle onClick={handleHistoric} data-test="history-link">
-          Histórico
-        </FooterTitle>
+        <Link data-test="habit-link" to="/habitos">
+          <FooterTitle>Hábitos</FooterTitle>
+        </Link>
+
+        <Link data-test="today-link" to="/hoje">
+          <ProgressContainer onClick={handleToday}>
+            <CircularProgressbar
+              value={progress}
+              text="Hoje"
+              background
+              backgroundPadding={6}
+              styles={{
+                path: {
+                  stroke: "#FFFFFF",
+                  strokeLinecap: "round",
+                  transition: "stroke-dashoffset 0.5s ease 0s",
+                },
+                trail: {
+                  stroke: "transparent", // Remove o rastro cinza
+                },
+                text: {
+                  fill: "#ffffff",
+                  fontSize: "18px",
+                  fontFamily: "Lexend Deca",
+                  fontWeight: "400",
+                },
+                background: {
+                  fill: "#52B6FF",
+                },
+                root: {
+                  width: "91px",
+                  height: "91px",
+                  marginBottom: "40px",
+                },
+              }}
+            />
+          </ProgressContainer>
+        </Link>
+
+        <Link data-test="history-link" to="/historico">
+          <FooterTitle>Histórico</FooterTitle>
+        </Link>
       </Footer>
     </Wrapper>
   );

@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 dayjs.locale("pt-br");
 
@@ -110,18 +110,7 @@ const TodayPage = () => {
         console.log("Erro ao marcar o hábito como concluído:", error);
       });
   };
-  const navigate = useNavigate();
 
-  const handleHabits = () => {
-    navigate("/habitos");
-  };
-  const handleToday = () => {
-    navigate("/hoje");
-  };
-
-  const handleHistoric = () => {
-    navigate("/historico");
-  };
   console.log(`Teste HabitList`, true.toString());
   return (
     <Wrapper>
@@ -183,45 +172,47 @@ const TodayPage = () => {
         </HabitsContainer>
       </Container>
       <Footer data-test="menu">
-        <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
-          Hábitos
-        </FooterTitle>
-        <ProgressContainer onClick={() => handleToday()}>
-          <CircularProgressbar
-            value={(completedHabits / habitList.length) * 100}
-            text="Hoje"
-            background
-            backgroundPadding={6}
-            styles={{
-              path: {
-                stroke: "#FFFFFF",
-                strokeLinecap: "round",
-                transition: "stroke-dashoffset 0.5s ease 0s",
-              },
-              trail: {
-                stroke: "transparent", // Remove o rastro cinza
-              },
-              text: {
-                fill: "#ffffff",
-                fontSize: "18px",
-                fontFamily: "Lexend Deca",
-                fontWeight: "400",
-              },
-              background: {
-                fill: "#52B6FF",
-              },
-              root: {
-                width: "91px",
-                height: "91px",
-                marginBottom: "40px",
-              },
-            }}
-          />
-        </ProgressContainer>
+        <Link data-test="habit-link" to="/habitos">
+          <FooterTitle>Hábitos</FooterTitle>
+        </Link>
 
-        <FooterTitle onClick={() => handleHistoric()} data-test="history-link">
-          Histórico
-        </FooterTitle>
+        <Link data-test="today-link" to="/hoje">
+          <ProgressContainer>
+            <CircularProgressbar
+              value={(completedHabits / habitList.length) * 100}
+              text="Hoje"
+              background
+              backgroundPadding={6}
+              styles={{
+                path: {
+                  stroke: "#FFFFFF",
+                  strokeLinecap: "round",
+                  transition: "stroke-dashoffset 0.5s ease 0s",
+                },
+                trail: {
+                  stroke: "transparent", // Remove o rastro cinza
+                },
+                text: {
+                  fill: "#ffffff",
+                  fontSize: "18px",
+                  fontFamily: "Lexend Deca",
+                  fontWeight: "400",
+                },
+                background: {
+                  fill: "#52B6FF",
+                },
+                root: {
+                  width: "91px",
+                  height: "91px",
+                  marginBottom: "40px",
+                },
+              }}
+            />
+          </ProgressContainer>
+        </Link>
+        <Link data-test="history-link" to="/historico">
+          <FooterTitle>Histórico</FooterTitle>
+        </Link>
       </Footer>
     </Wrapper>
   );

@@ -9,7 +9,7 @@ import "react-circular-progressbar/dist/styles.css";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { CircularProgressbar } from "react-circular-progressbar";
 
 const HabitsPage = () => {
@@ -252,56 +252,48 @@ const HabitsPage = () => {
         )}
       </Container>
       <Footer data-test="menu">
-        <FooterTitle
-          disabled={saving}
-          data-test="habit-link"
-          onClick={() => handleHabits()}
-        >
-          Hábitos
-        </FooterTitle>
+        <Link data-test="habit-link" to="/habitos">
+          <FooterTitle>Hábitos</FooterTitle>
+        </Link>
+        <Link data-test="today-link" to="/hoje">
+          <ProgressContainer disabled={saving}>
+            <CircularProgressbar
+              value={progress}
+              text="Hoje"
+              background
+              backgroundPadding={6}
+              styles={{
+                path: {
+                  stroke: "#FFFFFF",
+                  strokeLinecap: "round",
+                  transition: "stroke-dashoffset 0.5s ease 0s",
+                },
+                trail: {
+                  stroke: "transparent", // Remove o rastro cinza
+                },
 
-        <ProgressContainer disabled={saving} onClick={() => handleToday()}>
-          <CircularProgressbar
-            data-test="today-link"
-            value={progress}
-            text="Hoje"
-            background
-            backgroundPadding={6}
-            styles={{
-              path: {
-                stroke: "#FFFFFF",
-                strokeLinecap: "round",
-                transition: "stroke-dashoffset 0.5s ease 0s",
-              },
-              trail: {
-                stroke: "transparent", // Remove o rastro cinza
-              },
+                text: {
+                  fill: "#ffffff",
+                  fontSize: "18px",
+                  fontFamily: "Lexend Deca",
+                  fontWeight: "400",
+                },
+                background: {
+                  fill: "#52B6FF",
+                },
+                root: {
+                  width: "91px",
+                  height: "91px",
+                  marginBottom: "40px",
+                },
+              }}
+            />
+          </ProgressContainer>
+        </Link>
 
-              text: {
-                fill: "#ffffff",
-                fontSize: "18px",
-                fontFamily: "Lexend Deca",
-                fontWeight: "400",
-              },
-              background: {
-                fill: "#52B6FF",
-              },
-              root: {
-                width: "91px",
-                height: "91px",
-                marginBottom: "40px",
-              },
-            }}
-          />
-        </ProgressContainer>
-
-        <FooterTitle
-          disabled={saving}
-          onClick={() => handleHistoric()}
-          data-test="history-link"
-        >
-          Histórico
-        </FooterTitle>
+        <Link data-test="history-link" to="/historico">
+          <FooterTitle>Histórico</FooterTitle>
+        </Link>
       </Footer>
     </Wrapper>
   );
