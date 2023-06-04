@@ -84,7 +84,7 @@ const TodayPage = () => {
         </Day>
         <HabitsContainer></HabitsContainer>
       </Container>
-      <Footer>
+      <Footer data-test="menu">
         <FooterTitle data-test="habit-link" onClick={handleHabits}>
           Hábitos
         </FooterTitle>
@@ -184,6 +184,7 @@ const Title = styled.h2`
   font-size: 22.976px;
   line-height: 29px;
   color: #126ba5;
+  margin-bottom: 20px;
 `;
 
 const NoHabitsText = styled.p`

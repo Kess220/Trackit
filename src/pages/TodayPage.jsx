@@ -182,7 +182,7 @@ const TodayPage = () => {
           ))}
         </HabitsContainer>
       </Container>
-      <Footer>
+      <Footer data-test="menu">
         <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
           Hábitos
         </FooterTitle>

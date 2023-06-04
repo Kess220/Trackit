@@ -47,6 +47,7 @@ const LoginPage = () => {
         "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
         userData
       );
+      
 
       const { token, image } = response.data;
       updateToken(token);
