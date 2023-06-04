@@ -118,7 +118,7 @@ const TodayPage = () => {
         <TrackDiv>
           <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
-        <UserImage src={image} alt="Bob" />
+        <UserImage data-test="avatar" src={image} alt="Bob" />
       </Nav>
       <Container>
         <Day>
