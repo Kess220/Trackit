@@ -16,8 +16,6 @@ const HabitsPage = () => {
   const { image, token, completedHabits, habitList } = useContext(AuthContext);
   const progress = (completedHabits / habitList.length) * 100;
 
-  console.log(habitList, completedHabits);
-
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -26,18 +24,20 @@ const HabitsPage = () => {
   const [habits, setHabits] = useState([]);
   const navigate = useNavigate();
   const daysOfWeekButtons = [
-    { day: "D", value: "1" },
-    { day: "S", value: "2" },
-    { day: "T", value: "3" },
+    { day: "D", value: "0" },
+    { day: "S", value: "1" },
+    { day: "T", value: "2" },
+    { day: "Q", value: "3" },
     { day: "Q", value: "4" },
-    { day: "Q", value: "5" },
+    { day: "S", value: "5" },
     { day: "S", value: "6" },
-    { day: "S", value: "7" },
   ];
 
   useEffect(() => {
-    handleGetHabits();
-  }, []);
+    if (token != null) {
+      handleGetHabits();
+    }
+  }, [token]);
 
   // Obtenha o token do contexto
 
@@ -193,8 +193,8 @@ const HabitsPage = () => {
                   disabled={saving}
                   data-test="habit-day"
                   key={day.value}
-                  selected={selectedDays.includes(day.value)}
-                  onClick={() => handleDayClick(day.value)}
+                  selected={selectedDays.includes(parseInt(day.value))}
+                  onClick={() => handleDayClick(parseInt(day.value))}
                 >
                   {day.day}
                 </DayButton>

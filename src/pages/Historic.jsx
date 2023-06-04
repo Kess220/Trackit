@@ -1,21 +1,46 @@
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import trackIt from "../assets/TrackIt.png";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../components/AuthContext";
+import axios from "axios";
 
-const Historic = () => {
+const TodayPage = () => {
   const { image, token, completedHabits, habitList } = useContext(AuthContext);
   const progress = (completedHabits / habitList.length) * 100;
-  const [habitHistory, setHabitHistory] = useState([]);
+  const [habitsHistory, setHabitsHistory] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token != null) {
+      const fetchHabitsHistory = async () => {
+        try {
+          const response = await axios.get(
+            "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Coloque o seu token aqui
+              },
+            }
+          );
+          setHabitsHistory(response.data);
+          console.log(response.data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchHabitsHistory();
+    }
+  }, [token]);
 
   const handleHabits = () => {
     navigate("/habitos");
   };
+
   const handleToday = () => {
     navigate("/hoje");
   };
@@ -23,27 +48,6 @@ const Historic = () => {
   const handleHistoric = () => {
     navigate("/historico");
   };
-
-  useEffect(() => {
-    const fetchHabitHistory = async () => {
-      try {
-        const response = await fetch(
-          "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await response.json();
-        setHabitHistory(data);
-      } catch (error) {
-        console.log("Error fetching habit history:", error);
-      }
-    };
-
-    fetchHabitHistory();
-  }, [token]);
 
   return (
     <Wrapper>
@@ -54,38 +58,37 @@ const Historic = () => {
         <UserImage data-test="avatar" src={image} alt="Bob" />
       </Nav>
       <Container>
-        {Array.isArray(habitHistory) && habitHistory.length > 0 ? (
-          habitHistory.map((entry) => (
-            <Day key={entry.day}>
-              <Title>{entry.day}</Title>
-              {entry.habits.length === 0 ? (
-                <NoHabitsText>
-                  Em breve você poderá ver o histórico dos seus hábitos aqui!
-                </NoHabitsText>
-              ) : (
-                entry.habits.map((habit) => (
-                  <HabitCard key={habit.id}>
-                    <HabitTitle>{habit.name}</HabitTitle>
-                    <HabitInfo className={habit.done ? "done" : ""}>
-                      {habit.done ? "Concluído" : "Não concluído"}
-                    </HabitInfo>
-                  </HabitCard>
-                ))
-              )}
-            </Day>
-          ))
-        ) : (
-          <NoHabitsText>
-            Em breve você poderá ver o histórico dos seus hábitos aqui!
-          </NoHabitsText>
-        )}
+        <Day>
+          <Title>Histórico</Title>
+          {habitsHistory.length === 0 ? (
+            <NoHabitsText>
+              Em breve você poderá ver o histórico dos seus hábitos aqui!
+            </NoHabitsText>
+          ) : (
+            habitsHistory.map((historyItem) => (
+              <HistoryItem key={historyItem.day}>
+                <HistoryDay>{historyItem.day}</HistoryDay>
+                {historyItem.habits.map((habit) => (
+                  <HistoryHabit key={habit.id}>
+                    {habit.done ? (
+                      <CompletedHabitIcon />
+                    ) : (
+                      <IncompleteHabitIcon />
+                    )}
+                    <HabitName>{habit.name}</HabitName>
+                  </HistoryHabit>
+                ))}
+              </HistoryItem>
+            ))
+          )}
+        </Day>
+        <HabitsContainer></HabitsContainer>
       </Container>
-
       <Footer>
-        <FooterTitle data-test="habit-link" onClick={() => handleHabits()}>
+        <FooterTitle data-test="habit-link" onClick={handleHabits}>
           Hábitos
         </FooterTitle>
-        <ProgressContainer onClick={() => handleToday()}>
+        <ProgressContainer onClick={handleToday}>
           <CircularProgressbar
             data-test="today-link"
             value={progress}
@@ -101,7 +104,6 @@ const Historic = () => {
               trail: {
                 stroke: "transparent", // Remove o rastro cinza
               },
-
               text: {
                 fill: "#ffffff",
                 fontSize: "18px",
@@ -119,7 +121,7 @@ const Historic = () => {
             }}
           />
         </ProgressContainer>
-        <FooterTitle onClick={() => handleHistoric()} data-test="history-link">
+        <FooterTitle onClick={handleHistoric} data-test="history-link">
           Histórico
         </FooterTitle>
       </Footer>
@@ -143,39 +145,6 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const HabitCard = styled.div`
-  width: 340px;
-  height: 94px;
-  background: #ffffff;
-  border-radius: 5px;
-  margin: 16px;
-  display: flex;
-  align-items: center;
-  .circular-progressbar {
-    width: 69px;
-    height: 69px;
-  }
-`;
-const HabitCardText = styled.div`
-  flex: 1;
-  margin: 16px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-`;
-const HabitTitle = styled.h3`
-  font-family: "Lexend Deca", sans-serif;
-  font-weight: 400;
-  font-size: 19.976px;
-  line-height: 25px;
-  color: #666666;
-`;
-
-const HabitInfo = styled.div`
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-`;
 const FooterTitle = styled.button`
   font-family: "Lexend Deca";
   font-style: normal;
@@ -190,6 +159,7 @@ const FooterTitle = styled.button`
   background-color: transparent;
   cursor: pointer;
 `;
+
 const Footer = styled.footer`
   height: 70px;
   display: flex;
@@ -213,7 +183,6 @@ const Title = styled.h2`
   font-weight: 400;
   font-size: 22.976px;
   line-height: 29px;
-
   color: #126ba5;
 `;
 
@@ -223,7 +192,50 @@ const NoHabitsText = styled.p`
   font-weight: 400;
   font-size: 17.976px;
   line-height: 22px;
+  color: #666666;
+`;
 
+const HistoryItem = styled.div`
+  margin-bottom: 20px;
+`;
+
+const HistoryDay = styled.h3`
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17.976px;
+  line-height: 22px;
+  color: #126ba5;
+`;
+
+const HistoryHabit = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+`;
+
+const CompletedHabitIcon = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #8fc549;
+  margin-right: 8px;
+`;
+
+const IncompleteHabitIcon = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #eb5757;
+  margin-right: 8px;
+`;
+
+const HabitName = styled.p`
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17.976px;
+  line-height: 22px;
   color: #666666;
 `;
 
@@ -242,17 +254,20 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-between;
 `;
+
 const TrackLogo = styled.img`
   width: 97px;
   height: 49px;
 `;
+
 const TrackDiv = styled.div`
   display: flex;
 `;
+
 const UserImage = styled.img`
   width: 51px;
   height: 51px;
   border-radius: 98.5px;
 `;
 
-export default Historic;
+export default TodayPage;

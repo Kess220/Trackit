@@ -14,17 +14,15 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const { updateToken, updateUserImage } = useContext(AuthContext);
+  const { updateToken, updateUserImage, token } = useContext(AuthContext);
+
+  const hasToken = !!token;
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const { token, image } = JSON.parse(storedUser);
-      updateToken(token);
-      updateUserImage(image);
+    if (token) {
       navigate("/hoje");
     }
-  }, []);
+  }, [hasToken]);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);

@@ -11,7 +11,6 @@ import "dayjs/locale/pt-br";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-import { isToday } from "date-fns";
 
 dayjs.locale("pt-br");
 
@@ -23,19 +22,23 @@ const TodayPage = () => {
     updateHabitList,
     completedHabits,
     updateCompletedHabits,
+    totalHabits,
   } = useContext(AuthContext);
-  const totalHabits = habitList.length;
-  localStorage.setItem("token", token);
+
   const percentageCompleted =
     totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0;
   useEffect(() => {
-    handleGetHabits();
-    restoreCompletedHabits(); // Restaurar hábitos marcados ao carregar a página
-  }, []);
+    console.log(token);
+    if (token != null) {
+      handleGetHabits();
+      restoreCompletedHabits();
+    }
+    // Restaurar hábitos marcados ao carregar a página
+  }, [token]);
   const handleGetHabits = () => {
     axios
       .get(
-        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
+        "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -114,7 +117,7 @@ const TodayPage = () => {
   const handleHistoric = () => {
     navigate("/historico");
   };
-
+  console.log(`Teste HabitList`, true.toString());
   return (
     <Wrapper>
       <Nav>
@@ -148,7 +151,7 @@ const TodayPage = () => {
             <HabitCard
               data-test="today-habit-container"
               key={habit.id}
-              completed={habit.completed}
+              completed={habit.completed?.toString()}
               onClick={() => toggleHabitCompletion(habit.id)}
             >
               <HabitCardText>
@@ -167,7 +170,7 @@ const TodayPage = () => {
               <HabitIconWrapper>
                 <HabitIcon
                   data-test="today-habit-check-btn"
-                  completed={habit.completed}
+                  completed={habit.completed?.toString()}
                 />
               </HabitIconWrapper>
             </HabitCard>
@@ -339,7 +342,7 @@ const HabitIconWrapper = styled.div`
 const HabitIcon = styled(AiFillCheckSquare)`
   width: 69px;
   height: 69px;
-  color: ${({ completed }) => (completed ? "#8FC549" : "#ebebeb")};
+  color: ${({ completed }) => (completed == "true" ? "#8FC549" : "#ebebeb")};
   border-radius: 5px;
 `;
 
