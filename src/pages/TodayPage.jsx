@@ -27,14 +27,28 @@ const TodayPage = () => {
 
   const percentageCompleted =
     totalHabits > 0 ? (completedHabits / totalHabits) * 100 : 0;
+  const restoreCompletedHabits = () => {
+    const savedHabits = localStorage.getItem("completedHabits");
+    if (savedHabits) {
+      const parsedHabits = JSON.parse(savedHabits);
+      updateHabitList(parsedHabits);
+    }
+  };
+
   useEffect(() => {
-    console.log(token);
     if (token != null) {
       handleGetHabits();
       restoreCompletedHabits();
     }
-    // Restaurar hábitos marcados ao carregar a página
   }, [token]);
+
+  useEffect(() => {
+    if (token != null) {
+      handleGetHabits();
+      restoreCompletedHabits();
+    }
+  }, [token]);
+
   const handleGetHabits = () => {
     axios
       .get(
@@ -55,9 +69,7 @@ const TodayPage = () => {
   };
 
   useEffect(() => {
-    const countCompletedHabits = habitList.filter(
-      (habit) => habit.completed
-    ).length;
+    const countCompletedHabits = habitList.filter((habit) => habit.done).length;
     updateCompletedHabits(countCompletedHabits);
 
     // Salvar hábitos marcados no localStorage
@@ -68,13 +80,6 @@ const TodayPage = () => {
     localStorage.setItem("completedHabits", JSON.stringify(habits));
   };
 
-  const restoreCompletedHabits = () => {
-    const savedHabits = localStorage.getItem("completedHabits");
-    if (savedHabits) {
-      const parsedHabits = JSON.parse(savedHabits);
-      updateHabitList(parsedHabits);
-    }
-  };
   const toggleHabitCompletion = (habitId) => {
     const habit = habitList.find((habit) => habit.id === habitId);
     if (!habit) {
@@ -92,19 +97,19 @@ const TodayPage = () => {
         }
       )
       .then((response) => {
-        const updatedHabitList = habitList.map((habit) =>
+        const updatedHabit = habitList.map((habit) =>
           habit.id === habitId
             ? { ...habit, completed: !habit.completed }
             : habit
         );
-        updateHabitList(updatedHabitList);
-        console.log("Habit marked as complete:", response.data);
+        updateHabitList(updatedHabit);
+        console.log("Hábito marcado como concluído:", response.data);
+        handleGetHabits();
       })
       .catch((error) => {
-        console.log("Error marking habit as complete:", error);
+        console.log("Erro ao marcar o hábito como concluído:", error);
       });
   };
-
   const navigate = useNavigate();
 
   const handleHabits = () => {
@@ -151,7 +156,7 @@ const TodayPage = () => {
             <HabitCard
               data-test="today-habit-container"
               key={habit.id}
-              completed={habit.completed?.toString()}
+              completed={habit.done}
               onClick={() => toggleHabitCompletion(habit.id)}
             >
               <HabitCardText>
@@ -170,7 +175,7 @@ const TodayPage = () => {
               <HabitIconWrapper>
                 <HabitIcon
                   data-test="today-habit-check-btn"
-                  completed={habit.completed?.toString()}
+                  completed={habit.done}
                 />
               </HabitIconWrapper>
             </HabitCard>
@@ -342,8 +347,9 @@ const HabitIconWrapper = styled.div`
 const HabitIcon = styled(AiFillCheckSquare)`
   width: 69px;
   height: 69px;
-  color: ${({ completed }) => (completed == "true" ? "#8FC549" : "#ebebeb")};
+  color: ${({ completed }) => (completed ? "#8FC549" : "#ebebeb")};
   border-radius: 5px;
+  transition: color 0.2s ease;
 `;
 
 const HabitTitle = styled.h3`
