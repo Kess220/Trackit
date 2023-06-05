@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 import trackIt from "../assets/TrackIt.png";
@@ -12,7 +12,6 @@ const Historic = () => {
   const { image, token, completedHabits, habitList } = useContext(AuthContext);
   const progress = (completedHabits / habitList.length) * 100;
   const [habitsHistory, setHabitsHistory] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (token != null) {
@@ -35,10 +34,6 @@ const Historic = () => {
       fetchHabitsHistory();
     }
   }, [token]);
-
-  const handleToday = () => {
-    navigate("/hoje");
-  };
 
   return (
     <Wrapper>
@@ -75,12 +70,12 @@ const Historic = () => {
         </Day>
         <HabitsContainer></HabitsContainer>
       </Container>
-      <Footer>
+      <Footer data-test="menu">
         <StyledLink to="/habitos">
           <FooterTitle>Hábitos</FooterTitle>
         </StyledLink>
         <StyledLink to="/hoje">
-          <ProgressContainer onClick={handleToday}>
+          <ProgressContainer>
             <CircularProgressbar
               value={progress}
               text="Hoje"
