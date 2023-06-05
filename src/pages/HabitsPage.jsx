@@ -9,7 +9,7 @@ import "react-circular-progressbar/dist/styles.css";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CircularProgressbar } from "react-circular-progressbar";
 
 const HabitsPage = () => {
@@ -22,7 +22,7 @@ const HabitsPage = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [habitName, setHabitName] = useState("");
   const [habits, setHabits] = useState([]);
-  const navigate = useNavigate();
+
   const daysOfWeekButtons = [
     { day: "D", value: "0" },
     { day: "S", value: "1" },
