@@ -157,7 +157,10 @@ const TodayPage = () => {
                   </InfoText>
                   <InfoText data-test="today-habit-record">
                     Sequência recorde:{" "}
-                    <SequenceValue completed={habit.done}>
+                    <SequenceValue
+                      completed={habit.done}
+                      record={habit.highestSequence > habit.currentSequence}
+                    >
                       {habit.highestSequence} dias
                     </SequenceValue>
                   </InfoText>
@@ -373,6 +376,7 @@ const InfoText = styled.p`
 
 const SequenceValue = styled.span`
   color: ${({ completed }) => (completed ? "#8FC549" : "#666666")};
+  opacity: ${({ completed, record }) => (completed && record ? "0.5" : "1")};
 `;
 
 const Footer = styled.footer`
