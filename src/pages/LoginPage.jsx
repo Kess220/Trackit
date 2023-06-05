@@ -10,17 +10,19 @@ import { ThreeDots } from "react-loader-spinner";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // State for loading status
 
   const navigate = useNavigate();
+
   const { updateToken, updateUserImage, token } = useContext(AuthContext);
+
   const hasToken = !!token;
 
   useEffect(() => {
     if (token) {
       navigate("/hoje");
     }
-  }, [navigate, hasToken]);
+  }, [hasToken]);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -32,12 +34,13 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
+    setLoading(true); // Set loading to true when login starts
 
     try {
       const userData = {
-        email,
-        password,
+        email: email,
+        password: password,
       };
 
       const response = await axios.post(
@@ -49,6 +52,7 @@ const LoginPage = () => {
       updateToken(token);
       updateUserImage(image);
 
+      // Save user object in Local Storage
       const user = {
         token,
         image,
@@ -57,7 +61,7 @@ const LoginPage = () => {
 
       navigate("/hoje");
     } catch (error) {
-      setLoading(false);
+      setLoading(false); // Set loading to false after displaying error alert
       alert("Ocorreu um erro ao fazer login. Verifique suas credenciais.");
     }
   };
@@ -65,29 +69,44 @@ const LoginPage = () => {
   return (
     <Wrapper>
       <Logo src={logo} alt="Logo" />
-      <Form onSubmit={handleLogin}>
-        <Input
-          type="email"
-          placeholder="email"
-          value={email}
-          onChange={handleEmailChange}
+      <form onSubmit={handleLogin}>
+        <div>
+          <Input
+            data-test="email-input"
+            type="email"
+            placeholder="email"
+            value={email}
+            onChange={handleEmailChange}
+            disabled={loading} // Disable input field if loading
+          />
+        </div>
+        <div>
+          <Input
+            data-test="password-input"
+            type="password"
+            placeholder="senha"
+            value={password}
+            onChange={handlePasswordChange}
+            disabled={loading} // Disable input field if loading
+          />
+        </div>
+        <Button
+          data-test="login-btn"
+          type="submit"
           disabled={loading}
-        />
-        <Input
-          type="password"
-          placeholder="senha"
-          value={password}
-          onChange={handlePasswordChange}
-          disabled={loading}
-        />
-        <Button type="submit" disabled={loading} loading={loading}>
-          {loading && (
-            <ThreeDots type="Oval" color="#FFF" height={40} width={40} />
-          )}
+          loading={loading}
+        >
+          <span>
+            {loading && (
+              <ThreeDots type="Oval" color="#FFF" height={40} width={40} />
+            )}
+          </span>
           {!loading && "Entrar"}
         </Button>
-      </Form>
-      <SignupLink to="/cadastro">Não tem uma conta? Cadastre-se!</SignupLink>
+      </form>
+      <SignupLink data-test="signup-link" to="/cadastro">
+        Não tem uma conta? Cadastre-se!
+      </SignupLink>
     </Wrapper>
   );
 };
@@ -110,12 +129,6 @@ const Logo = styled.img`
   width: 180px;
   height: 178.38px;
   margin-top: 68px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const Input = styled.input`
