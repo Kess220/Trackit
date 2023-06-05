@@ -86,21 +86,19 @@ const TodayPage = () => {
       return;
     }
 
+    const endpoint = habit.done
+      ? `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}/uncheck`
+      : `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}/check`;
+
     axios
-      .post(
-        `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habitId}/check`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .post(endpoint, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const updatedHabit = habitList.map((habit) =>
-          habit.id === habitId
-            ? { ...habit, completed: !habit.completed }
-            : habit
+          habit.id === habitId ? { ...habit, done: !habit.done } : habit
         );
         updateHabitList(updatedHabit);
         console.log("Hábito marcado como concluído:", response.data);
@@ -125,7 +123,7 @@ const TodayPage = () => {
           <Title data-test="today">{dayjs().format("dddd, DD/MM")}</Title>
           {completedHabits === 0 ? (
             <NoHabitsText data-test="today-counter">
-              Nenhum hábito concluído hoje.
+              Nenhum hábito concluído ainda
             </NoHabitsText>
           ) : (
             <HabitsText
@@ -133,10 +131,8 @@ const TodayPage = () => {
               percentage={percentageCompleted}
             >
               {percentageCompleted === 0
-                ? "Nenhum hábito concluído hoje."
-                : `${percentageCompleted.toFixed(
-                    0
-                  )}% de hábitos concluídos hoje.`}
+                ? "Nenhum hábito concluído ainda "
+                : `${percentageCompleted.toFixed(0)}% dos hábitos concluídos`}
             </HabitsText>
           )}
         </Day>
