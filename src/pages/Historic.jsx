@@ -1,17 +1,17 @@
 import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-import trackIt from "../assets/TrackIt.png";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../components/AuthContext";
 import axios from "axios";
 
-const TodayPage = () => {
+import trackIt from "../assets/TrackIt.png";
+import { AuthContext } from "../components/AuthContext";
+
+const Historic = () => {
   const { image, token, completedHabits, habitList } = useContext(AuthContext);
   const progress = (completedHabits / habitList.length) * 100;
   const [habitsHistory, setHabitsHistory] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +32,6 @@ const TodayPage = () => {
           console.log(error);
         }
       };
-
       fetchHabitsHistory();
     }
   }, [token]);
@@ -43,11 +42,11 @@ const TodayPage = () => {
 
   return (
     <Wrapper>
-      <Nav data-test="header">
+      <Nav>
         <TrackDiv>
           <TrackLogo src={trackIt} alt="TrackIt" />
         </TrackDiv>
-        <UserImage data-test="avatar" src={image} alt="Bob" />
+        <UserImage src={image} alt="Bob" />
       </Nav>
       <Container>
         <Day>
@@ -76,12 +75,11 @@ const TodayPage = () => {
         </Day>
         <HabitsContainer></HabitsContainer>
       </Container>
-      <Footer data-test="menu">
-        <StyledLink data-test="habit-link" to="/habitos">
+      <Footer>
+        <StyledLink to="/habitos">
           <FooterTitle>Hábitos</FooterTitle>
         </StyledLink>
-
-        <StyledLink data-test="today-link" to="/hoje">
+        <StyledLink to="/hoje">
           <ProgressContainer onClick={handleToday}>
             <CircularProgressbar
               value={progress}
@@ -115,8 +113,7 @@ const TodayPage = () => {
             />
           </ProgressContainer>
         </StyledLink>
-
-        <StyledLink data-test="history-link" to="/historico">
+        <StyledLink to="/historico">
           <FooterTitle>Histórico</FooterTitle>
         </StyledLink>
       </Footer>
@@ -130,43 +127,35 @@ const Wrapper = styled.div`
   min-height: 100vh;
   background: #e5e5e5;
 `;
-const StyledLink = styled(Link)`
-  text-decoration: none;
+
+const Nav = styled.nav`
+  height: 70px;
+  background: rgb(18, 107, 165);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
-const ProgressContainer = styled.div`
-  cursor: pointer;
+const TrackDiv = styled.div`
+  display: flex;
+`;
+
+const TrackLogo = styled.img`
+  width: 97px;
+  height: 49px;
+`;
+
+const UserImage = styled.img`
+  width: 51px;
+  height: 51px;
+  border-radius: 98.5px;
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const FooterTitle = styled.button`
-  font-family: "Lexend Deca";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 17.976px;
-  line-height: 22px;
-  text-align: center;
-  color: #52b6ff;
-  display: flex;
-  align-items: center;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-`;
-
-const Footer = styled.footer`
-  height: 70px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #ffffff;
 `;
 
 const Day = styled.div`
@@ -244,29 +233,38 @@ const HabitsContainer = styled.div`
   justify-content: center;
 `;
 
-const Nav = styled.nav`
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
+const Footer = styled.footer`
   height: 70px;
-  background: rgb(18, 107, 165);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 4px;
-  padding: 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+`;
+
+const FooterTitle = styled.button`
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17.976px;
+  line-height: 22px;
+  text-align: center;
+  color: #52b6ff;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 `;
 
-const TrackLogo = styled.img`
-  width: 97px;
-  height: 49px;
+const ProgressContainer = styled.div`
+  cursor: pointer;
 `;
 
-const TrackDiv = styled.div`
-  display: flex;
-`;
-
-const UserImage = styled.img`
-  width: 51px;
-  height: 51px;
-  border-radius: 98.5px;
-`;
-
-export default TodayPage;
+export default Historic;
