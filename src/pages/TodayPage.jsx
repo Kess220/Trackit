@@ -139,7 +139,6 @@ const TodayPage = () => {
         <HabitsContainer>
           {habitList.map((habit) => (
             <HabitCard
-              data-test="today-habit-container"
               key={habit.id}
               completed={habit.done}
               onClick={() => toggleHabitCompletion(habit.id)}
